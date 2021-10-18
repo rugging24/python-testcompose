@@ -85,7 +85,7 @@ class RunContainers:
         self._spawned_container_ranks.clear()
 
 if __name__ == "__main__":
-    config = Config("/Users/o.olaniyi/git_projects/docker-python/tests/config.yaml")
+    config = Config("docker-python/tests/config.yaml")
     config_content = config.get_config_services()
     # c = RunContainers(services=config_content)
     # c.run()
