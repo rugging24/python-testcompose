@@ -1,0 +1,51 @@
+services:
+  - name: db
+    image: "postgres:13"
+    auto_remove: True
+    command: ""
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: a
+    exposed_ports:
+      - 5432
+    # volumes:
+    #   - host: "/data"
+    #     container: "/data"
+    #     mode: "rw"
+    #   - host: "/data2"
+    #     container: "/data2"
+    #     mode: "ro"
+    log_wait_parameters:
+      log_line_regex: "database system is ready to accept connections"
+      wait_timeout: 30
+      poll_interval: 2
+    # http_wait_parameters:
+    #   http_port: 8080
+    #   response_status_code: 200
+    spawn_rank: 0
+  - name: app
+    image: "postgres:13"
+    auto_remove: True
+    command: " psql -c 'select 1'"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: a
+    exposed_ports:
+      - 5432
+    # volumes:
+    #   - host: "/data"
+    #     container: "/data"
+    #     mode: "rw"
+    #   - host: "/data2"
+    #     container: "/data2"
+    #     mode: "ro"
+    log_wait_parameters:
+      log_line_regex: "database system is ready to accept connections"
+      wait_timeout: 30.0
+      poll_interval: 1
+    # http_wait_parameters:
+    #   http_port: 8080
+    #   response_status_code: 200
+    spawn_rank: 1
