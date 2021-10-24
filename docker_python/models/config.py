@@ -1,5 +1,6 @@
+from dataclasses import dataclass
 from pydantic import BaseModel
-from typing import Dict, List, Union
+from typing import Dict, List, Optional
 from .volume import VolumeMapping
 
 
@@ -24,10 +25,17 @@ class ItestConfigMapper(BaseModel):
     environment: Dict[str, str]=dict()
     auto_remove: bool=True
     remove_container: bool=True
-    log_wait_parameters: Union[LogWaitParameters, None]=None
-    http_wait_parameters: Union[HttpWaitParameters, None]=None
-    command: Union[str, None]=None
+    log_wait_parameters: Optional[LogWaitParameters]=None
+    http_wait_parameters: Optional[HttpWaitParameters]=None
+    command: Optional[str]=None
 
 
 class Services(BaseModel):
-    services: List[ItestConfigMapper]=list()
+    services: List[ItestConfigMapper]
+
+class RankedServices(BaseModel):
+    services: Dict[int, ItestConfigMapper]
+
+@dataclass(frozen=True)
+class RankedServiceKey:
+    SERVICES: str='services'

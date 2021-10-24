@@ -13,10 +13,10 @@ class GenericContainer(DockerContainer):
     def __init__(
         self,
         image: str,
-        command: Optional[str]= None,
-        exposed_ports: Optional[List[str]]= None,
+        exposed_ports: List[int],
+        command: Optional[str]=None,
         environment_variables: Optional[Dict[str, str]]= None,
-        volumes: Optional[List[Dict[str, str]]]= None,
+        volumes: Optional[List[VolumeMapping]]= None,
         auto_remove: bool = True,
         remove_container: bool = True,
         **kwargs: Any
@@ -24,7 +24,7 @@ class GenericContainer(DockerContainer):
         super(GenericContainer, self).__init__(image)
         if exposed_ports:
             if not isinstance(exposed_ports, list):
-                logger.info("Provided Values for exposed_ports must be of type List[str]")
+                logger.info("Provided Values for exposed_ports must be of type List[int]")
                 raise TypeError
             self.with_exposed_ports(*exposed_ports)
 
@@ -42,11 +42,11 @@ class GenericContainer(DockerContainer):
             if not isinstance(volumes, list):
                 logger.info("Provided Values for volumes must be of type List[str]")
                 raise TypeError
-            mapped: List[VolumeMapping] = [
-                VolumeMapping(**k) 
-                for k in volumes
-            ]
-            for volume in mapped:
+            # mapped: List[VolumeMapping] = [
+            #     VolumeMapping(k) 
+            #     for k in volumes
+            # ]
+            for volume in volumes:
                 self.with_volume_mapping(
                     host=volume.host, 
                     container=volume.container,
@@ -84,7 +84,7 @@ class GenericContainer(DockerContainer):
     def get_container_external_ip(self) -> str:
         return self.get_container_host_ip()
     
-    @wait_container_is_ready()
+    @wait_container_is_ready() # type: ignore
     def wait_for_container_log(self, log_line_regex: str, wait_timeout: float=60.0, log_poll_interval: int=1) -> None:
         wait_for_logs(
             container=self,
@@ -94,7 +94,7 @@ class GenericContainer(DockerContainer):
         )
         logger.info("%s", self.get_wrapped_container().logs().decode())
     
-    @wait_container_is_ready()
+    @wait_container_is_ready() # type: ignore
     def with_waith_for_http(self, exposed_port: int, status_code: int=200) -> bool:
         mapped_port = self.get_exposed_port(port=exposed_port)
         host_ip = self.get_container_host_ip()
