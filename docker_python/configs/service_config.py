@@ -22,11 +22,6 @@ class Config:
         if not _config_services:
             logger.error("No services were found in config file: %s", self._config_content)
             raise ValueError
-        # _ranks = list(_config_services.keys())
-        # _ranks.sort()
-        # config_services = dict()
-        # for r in _ranks:
-        #     config_services.update({"rank": r, "service": _config_services[r]})
         
         return RankedServices(**{RankedServiceKey.SERVICES: _config_services})
             
