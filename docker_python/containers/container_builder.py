@@ -28,42 +28,35 @@ class ContainerBuilder(ABC):
     def docker_client(self, client: DockerClient):
         self._docker_client = client
     
-    def with_registry_login(self, login: Login) -> 'ContainerBuilder':
+    def with_registry_login(self, login: Login):
         if login:
             self._login_param = login
-        return self
     
-    def with_exposed_ports(self, ports: Optional[List[str]]) -> 'ContainerBuilder':
+    def with_exposed_ports(self, ports: Optional[List[str]]):
         if ports:
             self._ports = {int(port): None for port in ports if port}
-        return self
     
-    def with_command(self, command: Optional[str]) -> 'ContainerBuilder':
+    def with_command(self, command: Optional[str]):
         if command:
             self._command = command
-        return self
     
-    def with_volumes(self, volumes: Optional[List[VolumeMapping]]) -> 'ContainerBuilder':
+    def with_volumes(self, volumes: Optional[List[VolumeMapping]]):
         if volumes:
             for vol in volumes:
                 self._volumes[vol.host] = {'bind': vol.container, 'mode': vol.mode}
-        return self
     
-    def with_environment(self, env: Optional[Dict[str, Any]]) -> 'ContainerBuilder':
+    def with_environment(self, env: Optional[Dict[str, Any]]):
         if env:
             for k, v in env.items():
                 self._environments[k] = v
-        return self
     
-    def with_hostname(self, hostname: Optional[str]) -> 'ContainerBuilder':
+    def with_hostname(self, hostname: Optional[str]):
         if hostname:
             self._host = hostname
-        return self
     
-    def with_container_name(self, name: Optional[str]) -> 'ContainerBuilder':
+    def with_container_name(self, name: Optional[str]):
         if name:
             self._name = name
-        return self
     
     def with_image(self, image: str):
         if image:
