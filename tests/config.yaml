@@ -1,3 +1,5 @@
+network:
+  name: some_network_name # this must already exists !!! Default is bridge
 services:
   - name: db1 #Note that this is not the running docker container name 
     image: "postgres:13"

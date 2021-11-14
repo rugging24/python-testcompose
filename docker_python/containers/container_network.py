@@ -1,10 +1,11 @@
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from docker.models.networks import Network
 from docker.client import DockerClient
 
 class ContainerNetwork:
-    def __init__(self, docker_client: DockerClient) -> None:
+    def __init__(self, docker_client: DockerClient, network_name) -> None:
         self._docker_client = docker_client
+        self.get_defined_network(network_name)
 
     @property
     def container_network(self) -> Network:
@@ -18,13 +19,29 @@ class ContainerNetwork:
     def network_name(self) -> Optional[str]:
         return self.container_network.name
 
-    def delete_group_network(self):
-        self._docker_client.networks.prune(
-            filters=""
-        )
+    def get_defined_network(self, network_name: str, auto_create_network: bool=False):
+        try:
+            _networks: List[Network] = self._docker_client.networks.list(
+                names=[network_name]
+            ) # type: ignore
+        except:
+            _networks = list()
+        if _networks:
+            self.container_network = _networks[0]
+        elif not _networks and auto_create_network:
+            self.container_network = self._create_group_network(network_name)
+        else:
+            raise AttributeError
+        
+    @property
+    def container_network_id(self) -> Optional[str]:
+        return self.container_network.short_id
+    
+    def remove_network(self):
+        self.container_network.remove()
 
-    def create_group_network(self, network_name: str, label: Dict[str, str]):
-        self.container_network  = self._docker_client.networks.create( # type: ignore
+    def _create_group_network(self, network_name: str, label: Dict[str, str]=dict())  -> Network:
+        return self._docker_client.networks.create( # type: ignore
             name=network_name,
             driver="bridge",
             check_duplicate=True,
@@ -33,12 +50,4 @@ class ContainerNetwork:
             enable_ipv6=False,
             attachable=True,
             scope="local"
-        ) 
-    
-    def get_container_network_id(self) -> Optional[str]:
-        return str(self.container_network.id) if self.container_network.id else None
-    
-    def add_container_to_network(self, container_id) -> None:
-        self.container_network.connect(
-            container=container_id
         )

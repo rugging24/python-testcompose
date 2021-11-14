@@ -12,14 +12,17 @@ class ContainerBuilder(ABC):
         self._environments: Dict[str, Any]= dict()
         self._ports: Dict[int, Any]= dict()
         self._volumes: Dict[str, Dict[str, str]]= dict()
-        self._image: Optional[str]= None
         self._docker_host: Optional[str]= None
-        self._command: Optional[str]= None
-        self._name: Optional[str] = None
-        self._login_param: Login= Login()
-        self._host: Optional[str]= None
-        self._container_param: ContainerParam = container_param
+        self.generic_container_param = container_param
+
+    @property
+    def generic_container_param(self) -> ContainerParam:
+        return self._container_param
     
+    @generic_container_param.setter
+    def generic_container_param(self, param: ContainerParam) -> None:
+        self._container_param = param
+
     @property
     def docker_client(self) -> DockerClient:
         return self._docker_client
@@ -27,18 +30,15 @@ class ContainerBuilder(ABC):
     @docker_client.setter
     def docker_client(self, client: DockerClient):
         self._docker_client = client
-    
-    def with_registry_login(self, login: Login):
-        if login:
-            self._login_param = login
-    
+
     def with_exposed_ports(self, ports: Optional[List[str]]):
         if ports:
-            self._ports = {int(port): None for port in ports if port}
-    
-    def with_command(self, command: Optional[str]):
-        if command:
-            self._command = command
+            for port in ports:
+                _ports = str(port).split(":")
+                if  len(_ports) == 2:
+                    self._ports[int(_ports[1])] = int(_ports[0])
+                else:
+                    self._ports[int(port)] = None
     
     def with_volumes(self, volumes: Optional[List[VolumeMapping]]):
         if volumes:
@@ -50,41 +50,25 @@ class ContainerBuilder(ABC):
             for k, v in env.items():
                 self._environments[k] = v
     
-    def with_hostname(self, hostname: Optional[str]):
-        if hostname:
-            self._host = hostname
-    
-    def with_container_name(self, name: Optional[str]):
-        if name:
-            self._name = name
-    
-    def with_image(self, image: str):
-        if image:
-            self._image = image
-    
-    def pull_image(self, always_pull=False):
+    def pull_image(self, image_pull_policy="Always_Pull"):
         # ToDo allow pull toggle
         try:
-            self.docker_client.images.get(name=self._image)
+            self.docker_client.images.get(name=self.generic_container_param.image)
         except ImageNotFound:
-            self.docker_client.images.pull(repository=self._image)
+            self.docker_client.images.pull(repository=self.generic_container_param.image)
     
     def build(self, docker_client: DockerClient) -> None:
         # print("----------------------------")
         # print(self._container_param)
         # print("----------------------------")
         self.docker_client = docker_client
-        self.with_container_name(self._container_param.container_name)
-        self.with_environment(self._container_param.environment_variables)     
+        self.with_environment(self._container_param.environment_variables)    
         self.with_volumes(self._container_param.volumes)
-        self.with_command(self._container_param.command)
         self.with_exposed_ports(self._container_param.exposed_ports)
-        self.with_registry_login(self._container_param.registry_login_param)
-        self.with_image(self._container_param.image)
-        if self._login_param.username:
-            login = self.docker_client.login(**self._login_param.dict())
+        if self.generic_container_param.registry_login_param.username:
+            login = self.docker_client.login(**self.generic_container_param.registry_login_param.dict())
             print(login)
-        print(f"Pulling image {self._image}")
+        print(f"Pulling image {self.generic_container_param.image}")
         self.pull_image()
     
     @abstractmethod

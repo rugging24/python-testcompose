@@ -4,6 +4,7 @@ import pytest
 @pytest.fixture(scope="module")
 def valid_container_config():
       return {
+      "network": {},
       "services": [
             {
                   "name": "database",

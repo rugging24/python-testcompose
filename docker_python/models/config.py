@@ -2,13 +2,12 @@ from dataclasses import dataclass
 from pydantic import BaseModel
 from typing import Any, Dict, List, Optional, Tuple
 from .volume import VolumeMapping
-
+from .network import NetworkConstants
 
 class LogWaitParameters(BaseModel):
     log_line_regex: str
     wait_timeout: str
     poll_interval: str
-
 
 class HttpWaitParameters(BaseModel):
     http_port: int
@@ -16,8 +15,7 @@ class HttpWaitParameters(BaseModel):
     startup_delay_time: int=20
     end_point: str="/"
 
-
-class ItestConfigMapper(BaseModel):
+class ITestConfigServices(BaseModel):
     name: str
     image: str
     exposed_ports: List[str]
@@ -31,15 +29,20 @@ class ItestConfigMapper(BaseModel):
     http_wait_parameters: Optional[HttpWaitParameters]=None
     command: Optional[str]=None
     entrypoint: Optional[str]=None
-    hostname: Optional[str]=None
 
+class ConfigCustomNetwork(BaseModel):
+    name: str=NetworkConstants.DEFAULT_NETWORK_MODE
+    auto_create: bool=False
 
-class Services(BaseModel):
-    services: List[ItestConfigMapper]
+class ITestConfig(BaseModel):
+    services: List[ITestConfigServices]
+    network: ConfigCustomNetwork=ConfigCustomNetwork()
 
 class RankedServices(BaseModel):
-    services: Dict[Tuple[int, str], ItestConfigMapper]
+    services: Dict[Tuple[int, str], ITestConfigServices]
+    network: ConfigCustomNetwork
 
 @dataclass(frozen=True)
 class RankedServiceKey:
     SERVICES: str='services'
+    NETWORK: str='network'

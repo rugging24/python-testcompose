@@ -47,13 +47,15 @@ class GenericContainer(ContainerBuilder):
         try:
             if self.docker_client:
                 self.container = self.docker_client.containers.run(
-                    image=self._image,
-                    command=self._command,
+                    image=self.generic_container_param.image,
+                    command=self.generic_container_param.command,
                     detach=True,
                     environment=self._environments,
                     ports=self._ports,
-                    name=self._name,
                     volumes=self._volumes,
+                    entrypoint=self.generic_container_param.entry_point,
+                    auto_remove=self.generic_container_param.auto_remove,
+                    remove=self.generic_container_param.remove_container,
                     **self._kwargs
                 )
                 self.reload()
@@ -93,12 +95,11 @@ class GenericContainer(ContainerBuilder):
             return self.container.id
         return None
     
-    def get_container_ip(self, network_mode=None) -> str:
-        # ToDO : Allow for dedicated network creation
-        if network_mode:
-            _networks = self.get_container_attr.NetworkSettings.Networks[network_mode]
-        else:
-            _networks = self.get_container_attr.NetworkSettings.Networks[NetworkConstants.DEFAULT_NETWORK_MODE]
+    def get_container_ip(self, network_name=NetworkConstants.DEFAULT_NETWORK_MODE) -> str:
+        if not network_name:
+            raise ValueError("Docker network name must be provided!!")
+        _networks = self.get_container_attr.NetworkSettings.Networks[network_name]
+
         return _networks.IPAddress
     
     def exe_command(self, command: Union[str, List[str]]) -> Tuple[int, ByteString]:

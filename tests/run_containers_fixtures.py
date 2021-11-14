@@ -56,6 +56,10 @@ def db_and_app_containers():
 @pytest.fixture(scope="module")
 def broker_app_and_db_containers():
     return {
+        "network": {
+            "name": "25e5404f09434629805ff6c041545a2c_network",
+            "auto_create": False
+        },
         "services": [
             {
                 "name": "database",
@@ -82,7 +86,10 @@ def broker_app_and_db_containers():
                 "auto_remove": True,
                 "command": "",
                 "environment": {
-                    "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.docker_python_internal_host}:5432/${database.postgres_db}"
+                    "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.docker_python_internal_host}:5432/${database.postgres_db}",
+                    "KAFKA_BOOTSTRAP_SERVERS": "${kafka.docker_python_internal_host}:29092",
+                    "KAFKA_OFFSET_RESET": "earliest",
+                    "KAFKA_TOPIC": "test_kafka_topic"
                 },
                 "exposed_ports": [
                     "8000"
@@ -102,7 +109,6 @@ def broker_app_and_db_containers():
                 "name": "zookeeper",
                 "image": "confluentinc/cp-zookeeper:6.2.1",
                 "auto_remove": True,
-                "hostname": "zookeeper",
                 "exposed_ports": [
                     "2181"
                 ],
@@ -121,7 +127,6 @@ def broker_app_and_db_containers():
                 "image": "confluentinc/cp-kafka:6.2.1",
                 "auto_remove": True,
                 "command": "",
-                "hostname": "broker",
                 "exposed_ports": [
                     "9092"
                 ],
@@ -134,9 +139,9 @@ def broker_app_and_db_containers():
                     "KAFKA_BROKER_ID": 1,
                     "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR": 1,
                     "KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS": 0,
-                    "KAFKA_ZOOKEEPER_CONNECT": "zookeeper:${zookeeper.zookeeper_client_port}", #${zookeeper.docker_python_internal_host}
+                    "KAFKA_ZOOKEEPER_CONNECT": "${zookeeper.docker_python_internal_host}:${zookeeper.zookeeper_client_port}",
                     "KAFKA_AUTO_CREATE_TOPICS_ENABLE": 'true',
-                    "KAFKA_ADVERTISED_LISTENERS": "PLAINTEXT://broker:29092,CONNECTIONS_FROM_HOST://127.0.0.1:9092",
+                    "KAFKA_ADVERTISED_LISTENERS": "PLAINTEXT://${self.hostname}:29092,CONNECTIONS_FROM_HOST://localhost:${self.hostport_9092}",
                     "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP": "PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT",
                     "KAFKA_INTER_BROKER_LISTENER_NAME": "PLAINTEXT",
                     "KAFKA_LISTENERS": "PLAINTEXT://0.0.0.0:29092, CONNECTIONS_FROM_HOST://0.0.0.0:9092",

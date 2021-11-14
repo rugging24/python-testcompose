@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from docker_python.models.client import Login
 from docker_python.models.volume import VolumeMapping
 from docker_python.models.network import ContainerNetworkSettings, NetworkConstants
-# from docker_python.containers.generic_container import GenericContainer
 
 
 class ContainerParam(BaseModel):
@@ -17,15 +16,14 @@ class ContainerParam(BaseModel):
     volumes: Optional[List[VolumeMapping]]= None
     auto_remove: bool = True
     remove_container: bool = True
-    container_name: Optional[str]=None
     registry_login_param: Login = Login()
+
 
 class RunningContainer(BaseModel):
     containers: Dict[str, Any]= dict()
     extra_envs: Dict[str, Dict[str, Any]]=dict()
     precedence_map: Dict[str, int]=dict()
-    # class Config:
-    #     arbitrary_types_allowed: bool = True
+
 
 class ContainerState(BaseModel):
     Status: str

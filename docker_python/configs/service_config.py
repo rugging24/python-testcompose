@@ -1,29 +1,33 @@
 from typing import Dict, List, Optional, Set, Tuple
-from docker_python.models.config import Services, ItestConfigMapper, RankedServices, RankedServiceKey
+from docker_python.models.config import ITestConfig, ITestConfigServices, RankedServices, RankedServiceKey
 from testcontainers.core.utils import setup_logger
 
 logger = setup_logger(__name__)
 
 
 class Config:
-    def __init__(self) -> None:
-        self._ranked_it_services: Optional[RankedServices] = None
+    def __init__(self, test_services: ITestConfig) -> None:
+        self._get_container_spawn_precedence(test_services)
 
     @property
-    def ranked_itest_config_services(self) -> Optional[RankedServices]:
+    def ranked_itest_config_services(self) -> RankedServices:
         return self._ranked_it_services
     
     @ranked_itest_config_services.setter
     def ranked_itest_config_services(self, ranked_services: RankedServices) -> None:
         self._ranked_it_services = ranked_services
     
-    def get_container_spawn_precedence(self, test_services: Services) -> None:
-        _config_services: Dict[Tuple[int, str], ItestConfigMapper] = dict()
+    def _get_container_spawn_precedence(self, test_services: ITestConfig) -> None:
+        _config_services: Dict[Tuple[int, str], ITestConfigServices] = dict()
+        if not test_services:
+            logger.error("Config content can not be Null")
+            raise ValueError
+
         if not test_services.services:
             logger.error("No service was found in the provided config")
             raise ValueError
         
-        _processed_containers: List[ItestConfigMapper] = self._compute_container_ranks(
+        _processed_containers: List[ITestConfigServices] = self._compute_container_ranks(
             processed_containers=list(),
             processed_container_names=set(),
             unprocessed_containers=test_services.services
@@ -32,13 +36,16 @@ class Config:
         for _rank, _service in enumerate(_processed_containers):
             _config_services.update({(_rank, _service.name): _service})
         
-        self.ranked_itest_config_services = RankedServices(**{RankedServiceKey.SERVICES: _config_services})
+        self.ranked_itest_config_services = RankedServices(**{
+            RankedServiceKey.SERVICES: _config_services,
+            RankedServiceKey.NETWORK: test_services.network
+        })
     
     def _compute_container_ranks(
-        self, processed_containers: List[ItestConfigMapper], 
+        self, processed_containers: List[ITestConfigServices], 
         processed_container_names: Set[str], 
-        unprocessed_containers: List[ItestConfigMapper]
-    ) -> List[ItestConfigMapper]:
+        unprocessed_containers: List[ITestConfigServices]
+    ) -> List[ITestConfigServices]:
         if not unprocessed_containers and not processed_containers:
             raise ValueError("Processed and Unprocessed container are both empty")
 

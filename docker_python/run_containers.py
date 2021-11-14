@@ -9,17 +9,17 @@ from .models.container import (
     RunningContainerKeys, 
     RunningContainerEnvPrefixes
 )
-from .utils import Utils
-from docker_python.models.config import (
+from .containers.utils import ContainerUtils
+from .models.config import (
     RankedServices, 
-    ItestConfigMapper
+    ITestConfigServices
 )
-from docker_python.models.client import (
+from .models.client import (
     ClientFromEnv, ClientFromUrl, Login
 )
-from docker_python.client.client_from_env import EnvClient
-from docker_python.client.client_from_url import UrlClient
-from docker_python.models.container import ContainerParam
+from .models.container import ContainerParam
+from .client.client_from_env import EnvClient
+from .client.client_from_url import UrlClient
 from testcontainers.core.utils import setup_logger
 
 
@@ -69,6 +69,14 @@ class RunContainers:
     def running_containers(self, containers: RunningContainer):
         self._running_containers = containers
     
+    @property
+    def unique_container_label(self) -> str:
+        return self._unique_container_label 
+    
+    @unique_container_label.setter
+    def unique_container_label(self, label: str):
+        self._unique_container_label = label
+    
     def __enter__(self)-> RunningContainer:
         return self.run()
 
@@ -77,7 +85,7 @@ class RunContainers:
         if exc_tb and exc_type:
             logger.info("%s[%s]: %s", exc_type, exc_value, exc_tb)
     
-    def get_extra_dependency_envs(self, service: ItestConfigMapper, network_name: str=None) -> Dict[str, Dict[str, Any]]:
+    def get_extra_dependency_envs(self, service: ITestConfigServices, network_name: str=None) -> Tuple[Dict[str, Dict[str, Any]], List[str]]:
         _extra_env: Dict[str, Dict[str, Any]]=dict()
         _extra_env_dict_keys: Dict[str, Any] =dict()
         if service.name in self._dependency_mapping:
@@ -88,7 +96,7 @@ class RunContainers:
                 _container: GenericContainer = self.running_containers.containers[depends]
                 _extra_env_dict_keys.update({
                     f"{RunningContainerEnvPrefixes.INTERNAL_HOST}_{depends.upper()}": _container.get_container_ip(
-                        network_mode=network_name
+                        network_name=network_name
                     ),
                     f"{RunningContainerEnvPrefixes.EXTERNAL_HOST}_{depends.upper()}": _container.get_container_host_ip(),
                     f"{RunningContainerEnvPrefixes.MAPPED_PORTS}_{depends.upper()}":
@@ -97,15 +105,17 @@ class RunContainers:
                         )
                 })
         _extra_env_dict_keys.update({**service.environment})
-        _extra_env.update({
-            service.name: Utils.replace_pace_config_placeholders(
+        _env_config, _modified_exposed_ports = ContainerUtils.replace_container_config_placeholders(
                 env_config=_extra_env_dict_keys, 
                 dependency_mapping=self._dependency_mapping,
-                running_containers=self.running_containers
+                running_containers=self.running_containers,
+                unique_container_label=self.unique_container_label,
+                service_name=service.name,
+                exposed_ports=service.exposed_ports
             )
-        })
+        _extra_env.update({service.name: _env_config})
         logger.info("Found extra env variables: %s", _extra_env)
-        return _extra_env
+        return _extra_env, _modified_exposed_ports
 
     def get_container_envs(self, container: GenericContainer, exposed_ports: List[str]) -> Dict[str, Any]:
         return {
@@ -114,34 +124,35 @@ class RunContainers:
         }
 
     def run(self):
-        # _unique_label_prefix: str = uuid4().hex
-        # network = ContainerNetwork(docker_client=self.dclient)
-        # network.create_group_network(
-        #     network_name=f"{_unique_label_prefix}_network",
-        #     label={"name": f"{_unique_label_prefix}_network"}
-        # )
+        self.unique_container_label = uuid4().hex
+        container_network = ContainerNetwork(
+            docker_client=self.dclient,
+            network_name=self._ranked_services.network.name
+        )
         _running_containers: Dict[str, GenericContainer]=dict()
         try:
             ranks: List[Tuple[int, str]] = sorted(self._ranked_services.services)
             for rank, name in ranks:
                 service = self._ranked_services.services[(rank, name)]
-                _extra_envs: Dict[str, Dict[str, Any]] = self.get_extra_dependency_envs(
-                    service #, str(network.container_network.name)
+                _extra_envs, _modified_container_exposed_ports = self.get_extra_dependency_envs(
+                    service , container_network.network_name
                 )
                 generic_container: GenericContainer = GenericContainer(
                     docker_client=self.dclient,
                     container_param=ContainerParam(
                         image=service.image,
-                        exposed_ports=service.exposed_ports,
+                        exposed_ports=_modified_container_exposed_ports,
                         command=service.command,
                         entry_point=service.entrypoint,
                         environment_variables=_extra_envs.get(service.name),
                         volumes=service.volumes,
                         auto_remove=service.auto_remove,
                         remove_container=service.remove_container,
-                        container_name=service.hostname,
                         registry_login_param=self._registry_login_param
-                    )
+                    ),
+                    labels=[f"{self.unique_container_label}_{service.name}"],
+                    hostname=f"{self.unique_container_label}_{service.name}",
+                    network=container_network.network_name
                 )
                 generic_container.start()
                 if (rank, service.name) in _running_containers:
@@ -198,7 +209,7 @@ class RunContainers:
         _ranks: List[Tuple[int, str]] = sorted([(y, x) for x, y in self._dependency_mapping.items()], reverse=True)
         try:
             for _rank, _name in _ranks:
-                container = self.running_containers.containers[_name]
+                container: GenericContainer = self.running_containers.containers[_name]
                 container.stop()
                 logger.info(
                     "Successfully stopped container: %s(%s): %s", 
