@@ -15,11 +15,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Build App Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v5
-        with:
-          image: test-docker-python
-          registry: docker.io
-          dockerfile: docker/test_app/Dockerfile
+        run: docker build -t test-docker-python -f docker/test_app/Dockerfile .
       - name: Install tox
         run: pip install tox
       - name: Run Tests in Different Environments
