@@ -10,19 +10,19 @@ from docker_python.models.network import ContainerNetworkSettings, NetworkConsta
 class ContainerParam(BaseModel):
     image: str
     exposed_ports: List[str]
-    command: Optional[str]=None
-    entry_point: Optional[str]=None
-    environment_variables: Optional[Dict[str, Any]]= None
-    volumes: Optional[List[VolumeMapping]]= None
+    command: Optional[str] = None
+    entry_point: Optional[str] = None
+    environment_variables: Optional[Dict[str, Any]] = None
+    volumes: Optional[List[VolumeMapping]] = None
     auto_remove: bool = True
     remove_container: bool = True
     registry_login_param: Login = Login()
 
 
 class RunningContainer(BaseModel):
-    containers: Dict[str, Any]= dict()
-    extra_envs: Dict[str, Dict[str, Any]]=dict()
-    precedence_map: Dict[str, int]=dict()
+    containers: Dict[str, Any] = dict()
+    extra_envs: Dict[str, Dict[str, Any]] = dict()
+    precedence_map: Dict[str, int] = dict()
 
 
 class ContainerState(BaseModel):
@@ -33,10 +33,10 @@ class ContainerState(BaseModel):
     OOMKilled: bool
     Dead: bool
     ExitCode: int
-    
+
 
 class ContainerHostConfig(BaseModel):
-    NetworkMode: str=NetworkConstants.DEFAULT_NETWORK_MODE
+    NetworkMode: str = NetworkConstants.DEFAULT_NETWORK_MODE
 
 
 class RunningContainerAttributes(BaseModel):

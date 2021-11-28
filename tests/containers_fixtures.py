@@ -13,15 +13,13 @@ def db_and_app_containers():
                 "environment": {
                     "POSTGRES_USER": "postgres",
                     "POSTGRES_DB": "postgres",
-                    "POSTGRES_PASSWORD": "password"
+                    "POSTGRES_PASSWORD": "password",
                 },
-                "exposed_ports": [
-                    "5432"
-                ],
+                "exposed_ports": ["5432"],
                 "log_wait_parameters": {
                     "log_line_regex": ".*database system is ready to accept connections.*",
                     "wait_timeout": 30,
-                    "poll_interval": 2
+                    "poll_interval": 2,
                 },
             },
             {
@@ -32,34 +30,28 @@ def db_and_app_containers():
                 "environment": {
                     "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.docker_python_internal_host}:5432/${database.postgres_db}"
                 },
-                "exposed_ports": [
-                    "8000"
-                ],
+                "exposed_ports": ["8000"],
                 "log_wait_parameters": {
                     "log_line_regex": ".*Application startup complete.*",
                     "wait_timeout": 60,
-                    "poll_interval": 2
+                    "poll_interval": 2,
                 },
                 "http_wait_parameters": {
                     "http_port": 8000,
                     "response_status_code": 200,
                     "end_point": "/ping",
-                    "startup_delay_time": 30
+                    "startup_delay_time": 30,
                 },
-                "depends_on": [
-                    "database"
-                ]
-            }
+                "depends_on": ["database"],
+            },
         ]
     }
+
 
 @pytest.fixture(scope="module")
 def broker_app_and_db_containers():
     return {
-        "network": {
-            "name": "25e5404f09434629805ff6c041545a2c_network",
-            "auto_create": False
-        },
+        "network": {"name": "test_network", "auto_create": False, "use_random_network": True},
         "services": [
             {
                 "name": "database",
@@ -69,15 +61,13 @@ def broker_app_and_db_containers():
                 "environment": {
                     "POSTGRES_USER": "postgres",
                     "POSTGRES_DB": "postgres",
-                    "POSTGRES_PASSWORD": "password"
+                    "POSTGRES_PASSWORD": "password",
                 },
-                "exposed_ports": [
-                    "5432"
-                ],
+                "exposed_ports": ["5432"],
                 "log_wait_parameters": {
                     "log_line_regex": ".*database system is ready to accept connections.*",
                     "wait_timeout": 30,
-                    "poll_interval": 2
+                    "poll_interval": 2,
                 },
             },
             {
@@ -89,51 +79,39 @@ def broker_app_and_db_containers():
                     "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.docker_python_internal_host}:5432/${database.postgres_db}",
                     "KAFKA_BOOTSTRAP_SERVERS": "${kafka.docker_python_internal_host}:29092",
                     "KAFKA_OFFSET_RESET": "earliest",
-                    "KAFKA_TOPIC": "test_kafka_topic"
+                    "KAFKA_TOPIC": "test_kafka_topic",
                 },
-                "exposed_ports": [
-                    "8000"
-                ],
+                "exposed_ports": ["8000"],
                 "http_wait_parameters": {
                     "http_port": 8000,
                     "response_status_code": 200,
                     "end_point": "/ping",
-                    "startup_delay_time": 30
+                    "startup_delay_time": 30,
                 },
-                "depends_on": [
-                    "database",
-                    "kafka"
-                ]
+                "depends_on": ["database", "kafka"],
             },
             {
                 "name": "zookeeper",
                 "image": "confluentinc/cp-zookeeper:6.2.1",
                 "auto_remove": True,
-                "exposed_ports": [
-                    "2181"
-                ],
-                "environment": {
-                    "ZOOKEEPER_CLIENT_PORT": "2181",
-                    "ZOOKEEPER_TICK_TIME": 2000
-                },
+                "exposed_ports": ["2181"],
+                "environment": {"ZOOKEEPER_CLIENT_PORT": "2181", "ZOOKEEPER_TICK_TIME": 2000},
                 "log_wait_parameters": {
                     "log_line_regex": ".*Started AdminServer on address.*",
-                    "wait_timeout": 30,
-                    "poll_interval": 2
-                }
+                    "wait_timeout": 60,
+                    "poll_interval": 2,
+                },
             },
             {
                 "name": "kafka",
                 "image": "confluentinc/cp-kafka:6.2.1",
                 "auto_remove": True,
                 "command": "",
-                "exposed_ports": [
-                    "9092"
-                ],
+                "exposed_ports": ["9092"],
                 "log_wait_parameters": {
                     "log_line_regex": ".*Ready to serve as the new controller.*",
-                    "wait_timeout": 30,
-                    "poll_interval": 2
+                    "wait_timeout": 60,
+                    "poll_interval": 2,
                 },
                 "environment": {
                     "KAFKA_BROKER_ID": 1,
@@ -145,11 +123,9 @@ def broker_app_and_db_containers():
                     "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP": "PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT",
                     "KAFKA_INTER_BROKER_LISTENER_NAME": "PLAINTEXT",
                     "KAFKA_LISTENERS": "PLAINTEXT://0.0.0.0:29092, CONNECTIONS_FROM_HOST://0.0.0.0:9092",
-                    "KAFKA_BROKER_ID": 0
+                    "KAFKA_BROKER_ID": 0,
                 },
-                "depends_on": [
-                    "zookeeper"
-                ]
+                "depends_on": ["zookeeper"],
             },
-        ]
+        ],
     }

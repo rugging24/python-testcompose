@@ -1,6 +1,3 @@
-
-
-from typing import Any, Dict, Optional
 from docker.client import DockerClient
 from .base_client import BaseClient
 from docker_python.models.client import ClientFromUrl
@@ -19,8 +16,8 @@ class UrlClient(BaseClient):
         self._max_pool_size = client_param.max_pool_size or BaseClient._max_pool_size
 
         self.docker_client = self._initialise_client()
-    
-    def _initialise_client(self) -> 'DockerClient':
+
+    def _initialise_client(self) -> "DockerClient":
         return DockerClient(
             base_url=self._docker_host,
             version=self._version,

@@ -15,10 +15,10 @@ class EnvClient(BaseClient):
         self._assert_hostname = client_param.assert_hostname
         self._environment = client_param.environment
         # self._credstore_env = client_param.credstore_env
-        
+
         self.docker_client = self._initialise_client()
 
-    def _initialise_client(self) -> 'DockerClient':
+    def _initialise_client(self) -> "DockerClient":
         return docker.from_env(
             version=self._version,
             timeout=self._timeout,
