@@ -18,7 +18,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v4
         with:
           image: test-docker-python
-          tags: latest
+          tag: latest
           registry: ducker.io
           dockerfile: docker/test_app/Dockerfile
       - name: Install tox
