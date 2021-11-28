@@ -4,9 +4,10 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      max-parallel: 1
       matrix:
-        os: [ubuntu-latest]  # macos-latest, windows-latest
-        python-version: ['3.9']
+        os: [ubuntu-latest, macos-latest]  #  windows-latest
+        python-version: ['3.8', '3.9', '3.10']
     steps:
       - name: Code Checkout
         uses: actions/checkout@v2
