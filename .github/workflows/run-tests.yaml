@@ -15,11 +15,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Build App Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v4
+        uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: test-docker-python
-          tag: latest
-          registry: ducker.io
+          registry: docker.io
           dockerfile: docker/test_app/Dockerfile
       - name: Install tox
         run: pip install tox
