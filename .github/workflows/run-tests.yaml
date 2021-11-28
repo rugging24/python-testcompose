@@ -23,4 +23,4 @@ jobs:
         env:
           PY_VERSION: ${{ matrix.python-version }}
           PY_OS: ${{ matrix.os }}
-        run: tox -e "py" + $PY_VERSION.replace('.','')
+        run: tox -e "py" + $Env:py_version.replace('.','')
