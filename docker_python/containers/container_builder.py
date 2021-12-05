@@ -50,16 +50,13 @@ class ContainerBuilder(ABC):
                 self._environments[k] = v
 
     def pull_image(self, image_pull_policy="Always_Pull"):
-        # ToDo allow pull toggle
+        # TODO: Allow pull toggle
         try:
             self.docker_client.images.get(name=self.generic_container_param.image)
         except ImageNotFound:
             self.docker_client.images.pull(repository=self.generic_container_param.image)
 
     def build(self, docker_client: DockerClient) -> None:
-        # print("----------------------------")
-        # print(self._container_param)
-        # print("----------------------------")
         self.docker_client = docker_client
         self.with_environment(self._container_param.environment_variables)
         self.with_volumes(self._container_param.volumes)

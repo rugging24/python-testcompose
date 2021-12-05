@@ -23,6 +23,10 @@ black = "^21.10b0"
 kafka-python = "^2.0.2"
 tox = "^3.24.4"
 pre-commit = "^2.15.0"
+Sphinx = "^4.3.1"
+sphinx-rtd-theme = "^1.0.0"
+rinohtype = "^0.5.3"
+groundwork-sphinx-theme = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
 

@@ -7,6 +7,15 @@ logger = stream_logger(__name__)
 
 class Config:
     def __init__(self, test_services: ITestConfig) -> None:
+        """This class consumes the model created from a config file.
+        This is an important class that sets the precedence of how the
+        different containers are to be started and stopped. Usually, the
+        precedence are set correctly if the `depends_on` parameter of the
+        config is set. Cyclic dependency will fail the test before it starts.
+
+        Args:
+            test_services (ITestConfig): model resulting from a parsed configuration file.
+        """
         self._get_container_spawn_precedence(test_services)
 
     @property
@@ -18,6 +27,15 @@ class Config:
         self._ranked_it_services = ranked_services
 
     def _get_container_spawn_precedence(self, test_services: ITestConfig) -> None:
+        """
+
+        Args:
+            test_services (ITestConfig): model resulting from a parsed configuration file.
+
+        Raises:
+            ValueError: raised if test_services is `null`
+            AttributeError: raised if no concreate networking is provided
+        """
         _config_services: Dict[Tuple[int, str], ITestConfigServices] = dict()
         if not test_services:
             logger.error("Config content can not be Null")
@@ -36,7 +54,7 @@ class Config:
         for _rank, _service in enumerate(_processed_containers):
             _config_services.update({(_rank, _service.name): _service})
 
-        if all([test_services.network.auto_create, test_services.network.auto_create]):
+        if all([test_services.network.auto_create, test_services.network.use_random_network]):
             raise AttributeError(
                 "Both auto_create and use_random_network options of network can not be True!!"
             )
@@ -51,8 +69,24 @@ class Config:
         processed_container_names: Set[str],
         unprocessed_containers: List[ITestConfigServices],
     ) -> List[ITestConfigServices]:
+        """The main method that computes the ranking of the services specified
+        in the config.
+
+        Args:
+            processed_containers (List[ITestConfigServices]): Container object of the services to be tested
+            processed_container_names (Set[str]): the names of the services as specified in the configs that had been ranked
+            unprocessed_containers (List[ITestConfigServices]): the names of the services as specified in
+                                                                the configs yet to be ranked
+
+        Raises:
+            AttributeError: raised to prevent both unprocessed_containers and processed_containers from being `null`
+            ValueError: rasied when cyclic dependency is detected
+
+        Returns:
+            List[ITestConfigServices]: A list of ranked service models.
+        """
         if not unprocessed_containers and not processed_containers:
-            raise ValueError("Processed and Unprocessed container are both empty")
+            raise AttributeError("Processed and Unprocessed container are both empty")
 
         if not unprocessed_containers:
             return processed_containers

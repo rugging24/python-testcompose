@@ -17,4 +17,7 @@ class BaseClient(ABC):
 
     @abstractmethod
     def _initialise_client(self) -> "DockerClient":
+        """This is the method that initializes the docker client and needs
+        be implemented.
+        """
         ...

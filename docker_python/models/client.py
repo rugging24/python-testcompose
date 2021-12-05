@@ -10,7 +10,6 @@ class ClientFromEnv(BaseModel):
     ssl_version: Optional[int] = None
     assert_hostname: Optional[bool] = None
     environment: Optional[Dict[str, Any]] = None
-    # credstore_env: Optional[Dict[str, Any]]=None
 
 
 class ClientFromUrl(BaseModel):

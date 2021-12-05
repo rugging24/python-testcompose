@@ -6,6 +6,11 @@ from docker_python.models.client import ClientFromEnv
 
 class EnvClient(BaseClient):
     def __init__(self, client_param: ClientFromEnv) -> None:
+        """Client environment parameters
+
+        Args:
+            client_param (ClientFromEnv): model class consisting of parameters for client connections with environment variables
+        """
         super(EnvClient, self).__init__()
         self._version = client_param.version
         self._timeout = client_param.timeout or BaseClient._max_timeout

@@ -5,6 +5,11 @@ from docker_python.models.client import ClientFromUrl
 
 class UrlClient(BaseClient):
     def __init__(self, client_param: ClientFromUrl) -> None:
+        """Client url parameters
+
+        Args:
+            client_param (ClientFromUrl): model class consisting of parameters for client connections with http url
+        """
         super().__init__()
         self._docker_host = client_param.docker_host
         self._version = client_param.version
