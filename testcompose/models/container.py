@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel
 from dataclasses import dataclass
 
-from docker_python.models.client import Login
-from docker_python.models.volume import VolumeMapping
-from docker_python.models.network import ContainerNetworkSettings, NetworkConstants
+from testcompose.models.client import Login
+from testcompose.models.volume import VolumeMapping
+from testcompose.models.network import ContainerNetworkSettings, NetworkConstants
 
 
 class ContainerParam(BaseModel):

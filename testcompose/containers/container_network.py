@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from docker.models.networks import Network
-from docker_python.models.network import NetworkConstants
+from testcompose.models.network import NetworkConstants
 from docker.client import DockerClient
 
 

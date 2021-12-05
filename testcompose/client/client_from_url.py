@@ -1,6 +1,6 @@
 from docker.client import DockerClient
 from .base_client import BaseClient
-from docker_python.models.client import ClientFromUrl
+from testcompose.models.client import ClientFromUrl
 
 
 class UrlClient(BaseClient):

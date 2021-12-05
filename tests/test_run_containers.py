@@ -3,9 +3,9 @@ from typing import Any, Dict, Tuple
 from io import BytesIO
 import tarfile
 from requests import get, post
-from docker_python.configs.service_config import Config
-from docker_python.models.config import ITestConfig
-from docker_python.run_containers import RunContainers
+from testcompose.configs.service_config import Config
+from testcompose.models.config import ITestConfig
+from testcompose.run_containers import RunContainers
 from containers_fixtures import db_and_app_containers, broker_app_and_db_containers
 
 

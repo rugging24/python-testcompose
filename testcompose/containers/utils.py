@@ -2,7 +2,7 @@ import re
 import socket
 from copy import copy, deepcopy
 from typing import Any, Dict, List, Optional, Tuple
-from docker_python.models.container import RunningContainer
+from testcompose.models.container import RunningContainer
 
 
 class ContainerUtils:

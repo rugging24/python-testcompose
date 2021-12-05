@@ -1,7 +1,7 @@
 import docker
 from docker.client import DockerClient
 from .base_client import BaseClient
-from docker_python.models.client import ClientFromEnv
+from testcompose.models.client import ClientFromEnv
 
 
 class EnvClient(BaseClient):

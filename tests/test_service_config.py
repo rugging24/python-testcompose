@@ -4,10 +4,10 @@ from docker.models.networks import Network
 import pytest
 from pydantic.error_wrappers import ValidationError
 from config_fixtures import valid_container_config, config_with_missing_service_key, config_with_missing_attr
-from docker_python.configs.service_config import Config
-from docker_python.models.config import ITestConfig, RankedServices
-from docker_python.models.network import NetworkConstants
-from docker_python.containers.container_network import ContainerNetwork
+from testcompose.configs.service_config import Config
+from testcompose.models.config import ITestConfig, RankedServices
+from testcompose.models.network import NetworkConstants
+from testcompose.containers.container_network import ContainerNetwork
 
 
 def test_get_config_services_more_containers(valid_container_config):

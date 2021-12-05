@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 from docker.client import DockerClient
-from docker_python.models.container import ContainerParam
-from docker_python.models.volume import VolumeMapping
+from testcompose.models.container import ContainerParam
+from testcompose.models.volume import VolumeMapping
 from docker.errors import ImageNotFound
 
 

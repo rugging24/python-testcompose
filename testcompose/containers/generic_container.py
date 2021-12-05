@@ -7,9 +7,9 @@ from time import sleep
 from typing import Any, ByteString, Dict, List, Match, Optional, Tuple, Union
 from docker.models.containers import Container
 from docker.errors import APIError
-from docker_python.models.network import HostPortMapping, NetworkConstants
-from docker_python.containers.container_builder import ContainerBuilder
-from docker_python.models.container import ContainerParam, RunningContainerAttributes
+from testcompose.models.network import HostPortMapping, NetworkConstants
+from testcompose.containers.container_builder import ContainerBuilder
+from testcompose.models.container import ContainerParam, RunningContainerAttributes
 
 
 class GenericContainer(ContainerBuilder):

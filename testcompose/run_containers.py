@@ -2,8 +2,8 @@ import time
 from uuid import uuid4
 from typing import Any, Dict, List, Optional, Tuple
 from docker.client import DockerClient
-from docker_python.containers.generic_container import GenericContainer
-from docker_python.containers.container_network import ContainerNetwork
+from testcompose.containers.generic_container import GenericContainer
+from testcompose.containers.container_network import ContainerNetwork
 from .models.container import RunningContainer, RunningContainerKeys, RunningContainerEnvPrefixes
 from .containers.utils import ContainerUtils
 from .models.config import RankedServices, ITestConfigServices

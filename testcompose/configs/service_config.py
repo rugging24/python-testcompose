@@ -1,6 +1,6 @@
 from typing import Dict, List, Set, Tuple
-from docker_python.models.config import ITestConfig, ITestConfigServices, RankedServices, RankedServiceKey
-from docker_python.log_setup import stream_logger
+from testcompose.models.config import ITestConfig, ITestConfigServices, RankedServices, RankedServiceKey
+from testcompose.log_setup import stream_logger
 
 logger = stream_logger(__name__)
 
