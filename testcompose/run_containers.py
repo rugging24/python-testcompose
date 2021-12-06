@@ -37,13 +37,10 @@ class RunContainers:
 
     def get_docker_client(self, env_param: ClientFromEnv, url_param: ClientFromUrl) -> DockerClient:
         try:
-            client = (
-                EnvClient(env_param).docker_client
-                if not url_param.docker_host
-                else UrlClient(url_param).docker_client
-            )
-            assert client.ping()
-            return client
+            client = EnvClient(env_param) if not url_param.docker_host else UrlClient(url_param)
+            client.initialise_client()
+            assert client.docker_client.ping()
+            return client.docker_client
         except Exception as exc:
             logger.error("%s", exc)
             raise Exception

@@ -15,6 +15,26 @@ class ContainerUtils:
         service_name: str,
         exposed_ports: List[str],
     ) -> Tuple[Dict[str, Any], List[str]]:
+        """Replace placeholders in the service. Placeholders are
+        usually of the form *${container_name.containerenv_variable}*.
+
+        Args:
+            env_config (Dict[str, Any]): [description]
+            dependency_mapping (Dict[str, int]): [description]
+            running_containers (RunningContainer): [description]
+            unique_container_label (str): [description]
+            service_name (str): [description]
+            exposed_ports (List[str]): [description]
+
+        Raises:
+            ValueError: [description]
+            AttributeError: [description]
+            AttributeError: [description]
+            AttributeError: [description]
+
+        Returns:
+            Tuple[Dict[str, Any], List[str]]: [description]
+        """
         pattern = "\\$\\{([^}]*)}"
         _env_config: Dict[str, Any] = copy(env_config)
         _exposed_ports = deepcopy(exposed_ports)

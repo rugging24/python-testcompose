@@ -4,11 +4,16 @@ from docker.constants import DEFAULT_TIMEOUT_SECONDS, DEFAULT_MAX_POOL_SIZE
 
 
 class BaseClient(ABC):
-    _max_timeout = DEFAULT_TIMEOUT_SECONDS
-    _max_pool_size = DEFAULT_MAX_POOL_SIZE
+    max_timeout = DEFAULT_TIMEOUT_SECONDS
+    max_pool_size = DEFAULT_MAX_POOL_SIZE
 
     @property
-    def docker_client(self) -> "DockerClient":
+    def docker_client(self) -> DockerClient:
+        """Docker Client
+
+        Returns:
+            DockerClient: docker client object
+        """
         return self._docker_client
 
     @docker_client.setter
@@ -16,7 +21,7 @@ class BaseClient(ABC):
         self._docker_client = client
 
     @abstractmethod
-    def _initialise_client(self) -> "DockerClient":
+    def initialise_client(self) -> None:
         """This is the method that initializes the docker client and needs
         be implemented.
         """

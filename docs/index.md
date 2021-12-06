@@ -1,37 +1,86 @@
-## Welcome to GitHub Pages
+<p align="center" style="margin: 0 0 10px">
+  <img width="350" height="208" src="imgaes/testcompose.png" alt='Testcompose'>
+</p>
 
-You can use the [editor on GitHub](https://github.com/rugging24/testcompose/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+<h1 align="center" style="font-size: 3rem; margin: -15px 0">
+Testcompose
+</h1>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+---
 
-### Markdown
+**Testcompose** provides an easy way of using docker containers for functional and integration testing. It allows for combination of more than one containers and allows for interactions with these containers from your test code without having to write extra scripts for such interactions. I.e providing a docke compose kind of functionality with the extra benefit of being abale to fully control the containers from test codes.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+This is inspired by the  [testcontainers-python](https://testcontainers-python.readthedocs.io/en/latest/index.html#) project and goes further to add a few additional functionality to imporve software integration testing while allowing the engineer control every aspect of the test.
 
-```markdown
-Syntax highlighted code block
+---
 
-# Header 1
-## Header 2
-### Header 3
+Install testcompose using pip:
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```shell
+$ pip install testcompose
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+testcompose requires Python 3.6+.
 
-### Jekyll Themes
+You can either use a config file of the format:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rugging24/testcompose/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```yaml
+network:
+  name: some_network_name # this must already exists !!! Default is bridge
+  auto_create: False
+  use_random_network: True
+services:
+  - name: db1
+    image: "postgres:13"
+    auto_remove: True
+    command: ""
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: a
+    exposed_ports:
+      - 5432
+    volumes:
+      - host: "data_volume"
+        container: "/data"
+        mode: "rw"
+    log_wait_parameters:
+      log_line_regex: "database system is ready to accept connections"
+      wait_timeout: 30
+      poll_interval: 2
+```
 
-### Support or Contact
+Verify it as follows:
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```pycon
+from testcompose.parse_config import TestConfigParser
+from testcompose.configs.service_config import Config
+from testcompose.run_containers import RunContainers
+
+my_test_service = TestConfigParser.parse_config(
+    file_name='some-file-name'
+)
+my_config =  Config(test_services=my_test_service)
+print(my_config.ranked_itest_config_services)
+
+with RunContainers(
+        services=running_config.ranked_itest_config_services
+) as runner:
+    # Do some work and/or interract with the running containers
+
+    assert runner.containers
+
+    # Or get some parameters about the running containers
+
+    app_container = runner.extra_envs["app_container_config_name"]
+    mapped_port = app_container.get("DOCKER_PYTHON_MAPPED_PORTS", {}).get("port")
+
+
+```
+
+
+## Documentation
+
+For a run-through of all the basics, head over to the [QuickStart](quickstart.md).
+
+The [Developer Interface](api.md) provides a comprehensive API reference.

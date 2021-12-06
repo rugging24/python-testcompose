@@ -6,20 +6,26 @@ logger = stream_logger(__name__)
 
 
 class Config:
-    def __init__(self, test_services: ITestConfig) -> None:
-        """This class consumes the model created from a config file.
-        This is an important class that sets the precedence of how the
-        different containers are to be started and stopped. Usually, the
-        precedence are set correctly if the `depends_on` parameter of the
-        config is set. Cyclic dependency will fail the test before it starts.
+    """This class consumes the model created from a config file.
+    This is an important class that sets the precedence of how the
+    different containers are to be started and stopped. Usually, the
+    precedence are set correctly if the `depends_on` parameter of the
+    config is set. Cyclic dependency will fail the test before it starts.
 
-        Args:
-            test_services (ITestConfig): model resulting from a parsed configuration file.
-        """
+    Args:
+        test_services (ITestConfig): model resulting from a parsed configuration file.
+    """
+
+    def __init__(self, test_services: ITestConfig) -> None:
         self._get_container_spawn_precedence(test_services)
 
     @property
     def ranked_itest_config_services(self) -> RankedServices:
+        """Object containing the ordered services from the config
+
+        Returns:
+            RankedServices: ranked container services
+        """
         return self._ranked_it_services
 
     @ranked_itest_config_services.setter

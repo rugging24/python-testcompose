@@ -5,6 +5,16 @@ from docker.client import DockerClient
 
 
 class ContainerNetwork:
+    """Network management for running container.This class ensures
+    all containers in the same test belong to the same network.
+    Contians utility to create and cleanup network.
+
+    Args:
+        docker_client (DockerClient): Docker client
+        network_name (str): Name of test network
+        auto_create_network (bool, optional): Create network if it doesn't exists. Defaults to False.
+    """
+
     def __init__(
         self, docker_client: DockerClient, network_name: str, auto_create_network: bool = False
     ) -> None:
@@ -13,6 +23,11 @@ class ContainerNetwork:
 
     @property
     def container_network(self) -> Network:
+        """Network Object
+
+        Returns:
+            Network: container network object
+        """
         return self._container_network
 
     @container_network.setter
@@ -21,9 +36,23 @@ class ContainerNetwork:
 
     @property
     def network_name(self) -> Optional[str]:
+        """Network Name
+
+        Returns:
+            Optional[str]: Network Name
+        """
         return self.container_network.name
 
     def get_defined_network(self, network_name: str, auto_create_network: bool = False):
+        """Identify or create container network
+
+        Args:
+            network_name (str): Network name
+            auto_create_network (bool, optional): If set, create network if it does not exists. Defaults to False.
+
+        Raises:
+            AttributeError: When network does not exist or can not be created.
+        """
         try:
             networks: List[Network] = self._docker_client.networks.list(names=[network_name])  # type: ignore
         except Exception:
@@ -37,9 +66,15 @@ class ContainerNetwork:
 
     @property
     def container_network_id(self) -> Optional[str]:
+        """Container Short Id
+
+        Returns:
+            Optional[str]: container_id
+        """
         return self.container_network.short_id
 
     def remove_network(self):
+        """Cleanup created network"""
         self.container_network.remove()
 
     def _create_group_network(self, network_name: str, label: Dict[str, str] = dict()) -> Network:
