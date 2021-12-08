@@ -18,6 +18,25 @@ logger = stream_logger(__name__)
 
 
 class RunContainers:
+    """Run test containers
+
+    Args:
+        services (RankedServices): Ranked container services to be ran
+        wait_time_between_container_start (float, optional): Default time to wait before spawning the next container.
+                                                             This is aimed at preventing starting containers too earlier
+                                                             before the container(s) they depend on has not fully started.
+                                                             Especially when they do not have a log predicate to search for
+                                                             or an http endpoint to check agains.
+                                                             Defaults to 20.0.
+        url_param (ClientFromUrl, optional): Url parameters for connecting to the docker daemon.
+                                             Defaults to ClientFromUrl().
+        env_param (ClientFromEnv, optional): Environment variables parameter required to connect to
+                                             the docker daemon.
+                                             Defaults to ClientFromEnv().
+        registry_login_param ([type], optional): Parameter providing docker registry login details.
+                                             Defaults to Login().
+    """
+
     def __init__(
         self,
         services: RankedServices,
@@ -36,6 +55,21 @@ class RunContainers:
         self._container_network: Optional[ContainerNetwork] = None
 
     def get_docker_client(self, env_param: ClientFromEnv, url_param: ClientFromUrl) -> DockerClient:
+        """Docker client.
+        `Note`: only one of the parameters need be provided. If both the
+        env and url parameters are provided, the url parameter takes precedence.
+
+        Args:
+            env_param (ClientFromEnv): Environment variables parameter required to connect to
+                                       the docker daemon.
+            url_param (ClientFromUrl): Url parameters for connecting to the docker daemon
+
+        Raises:
+            Exception: When connection to docker daemon fails
+
+        Returns:
+            DockerClient: docker client
+        """
         try:
             client = EnvClient(env_param) if not url_param.docker_host else UrlClient(url_param)
             client.initialise_client()
@@ -47,6 +81,11 @@ class RunContainers:
 
     @property
     def dclient(self) -> DockerClient:
+        """docker client
+
+        Returns:
+            DockerClient: docker client
+        """
         return self._docker_client
 
     @dclient.setter
@@ -54,7 +93,12 @@ class RunContainers:
         self._docker_client = client
 
     @property
-    def running_containers(self) -> "RunningContainer":
+    def running_containers(self) -> RunningContainer:
+        """Running container objects
+
+        Returns:
+            RunningContainer: Running containers
+        """
         return self._running_containers
 
     @running_containers.setter
@@ -63,6 +107,11 @@ class RunContainers:
 
     @property
     def unique_container_label(self) -> str:
+        """Unique test string label.
+
+        Returns:
+            str: unique label
+        """
         return self._unique_container_label
 
     @unique_container_label.setter
@@ -80,6 +129,21 @@ class RunContainers:
     def get_extra_dependency_envs(
         self, service: ITestConfigServices, network_name: Optional[str] = None
     ) -> Tuple[Dict[str, Dict[str, Any]], List[str]]:
+        """Additional environment variables derived for easy manipulation of the
+        running containers. These are variables extracted from already running
+        containers to which the current container depends.
+
+        Args:
+            service (ITestConfigServices): Service to assigne special variable
+            network_name (Optional[str], optional): Container network name.
+                                                    Defaults to None.
+
+        Raises:
+            AttributeError: When a cyclic container dependency is detected.
+
+        Returns:
+            Tuple[Dict[str, Dict[str, Any]], List[str]]: A tuple of `extra_env` and `modified_exposed_ports`
+        """
         extra_env: Dict[str, Dict[str, Any]] = dict()
         extra_env_dict_keys: Dict[str, Any] = dict()
         if service.name in self._dependency_mapping:
@@ -115,6 +179,18 @@ class RunContainers:
         return extra_env, modified_exposed_ports
 
     def get_container_envs(self, container: GenericContainer, exposed_ports: List[str]) -> Dict[str, Any]:
+        """These are environment variables included in all running
+        containers even when their configuration does not contain
+        any environment variable. These are required to allow for
+        some certain level of interactions with the container at runtime.
+
+        Args:
+            container (GenericContainer): Container object
+            exposed_ports (List[str]): Container exposed port
+
+        Returns:
+            Dict[str, Any]: extra container envirnment variables
+        """
         return {
             RunningContainerEnvPrefixes.EXTERNAL_HOST: container.get_container_host_ip(),
             RunningContainerEnvPrefixes.MAPPED_PORTS: container.get_mapped_container_ports(
@@ -122,7 +198,18 @@ class RunContainers:
             ),
         }
 
-    def run(self):
+    def run(self) -> RunningContainer:
+        """Run all Generic Test Containers
+
+        Raises:
+            AttributeError: When current container being stated had a record it was already running.
+            TimeoutError: When a predicate could not be found in the log over a specified period of time
+            RuntimeError: When an http endpoint did not return the expected specified status code.
+            Exception: When an Unknown error occured during the process of starting a container.
+
+        Returns:
+            RunningContainer: running containers
+        """
         self.unique_container_label = uuid4().hex
         auto_create_network = (
             self._ranked_services.network.auto_create
@@ -223,6 +310,7 @@ class RunContainers:
         return self.running_containers
 
     def stop_running_containers(self):
+        """Stop all running containers"""
         _ranks: List[Tuple[int, str]] = sorted(
             [(y, x) for x, y in self._dependency_mapping.items()], reverse=True
         )

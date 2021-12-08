@@ -1,6 +1,5 @@
 # Developer Reference
 
-
 ::: testcompose.client.base_client.BaseClient
 
 ::: testcompose.client.client_from_env.EnvClient

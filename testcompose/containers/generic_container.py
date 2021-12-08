@@ -64,6 +64,12 @@ class GenericContainer(ContainerBuilder):
 
     @get_container_attr.setter
     def get_container_attr(self, atrr: RunningContainerAttributes):
+        """Running container attributes. Execute reload() to refresh this
+        property.
+
+        Args:
+            atrr (RunningContainerAttributes): container attributes
+        """
         self._container_attr = atrr
 
     def start(self) -> None:

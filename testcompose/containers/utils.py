@@ -19,21 +19,24 @@ class ContainerUtils:
         usually of the form *${container_name.containerenv_variable}*.
 
         Args:
-            env_config (Dict[str, Any]): [description]
-            dependency_mapping (Dict[str, int]): [description]
-            running_containers (RunningContainer): [description]
-            unique_container_label (str): [description]
-            service_name (str): [description]
-            exposed_ports (List[str]): [description]
+            env_config (Dict[str, Any]): Dict of config environment variables
+            dependency_mapping (Dict[str, int]): Dict showing service dependencies
+            running_containers (RunningContainer): Running container object
+            unique_container_label (str): uuid string for uniquely labelling a given test run
+            service_name (str): service name as specified in the config
+            exposed_ports (List[str]): container exposed ports
 
         Raises:
-            ValueError: [description]
-            AttributeError: [description]
-            AttributeError: [description]
-            AttributeError: [description]
+            ValueError: when a placeholder variable is not of the form service_name.variable_name
+            AttributeError: when container service name is not present in `dependency_mapping`
+            AttributeError: If a test is attempting to replace the exposed port on the host ar runtimr, this
+                            should be of the form hostport_1234. Where 1234 is the container exposed port.
+                            The container exposed port must be present in the list of `exposed_ports`
+            AttributeError: When substituted variable is not one of [`self`, `hostname`, `hostport_1234`].
+                            Where 1234 is the container exposed port.
 
         Returns:
-            Tuple[Dict[str, Any], List[str]]: [description]
+            Tuple[Dict[str, Any], List[str]]: A tuple of `env_config` and `exposed_ports`
         """
         pattern = "\\$\\{([^}]*)}"
         _env_config: Dict[str, Any] = copy(env_config)
@@ -81,6 +84,11 @@ class ContainerUtils:
 
     @staticmethod
     def get_free_host_port() -> str:
+        """Get a free random port number from the container host
+
+        Returns:
+            str: port number
+        """
         s = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         s.settimeout(2)
@@ -91,6 +99,16 @@ class ContainerUtils:
 
     @staticmethod
     def _get_assigned_free_port(modified_exposed_ports: List[str], container_port: str) -> Optional[str]:
+        """Assigne host:container port system from an obtained
+        free random port number from the container host
+
+        Args:
+            modified_exposed_ports (List[str]): A placeholder host port beginning with `hostport_`
+            container_port (str): Exposed container port
+
+        Returns:
+            Optional[str]: host port number
+        """
         host_port: Optional[str] = None
         count = set([x for x in modified_exposed_ports if x.endswith(f":{container_port}")])
         if count:

@@ -47,7 +47,6 @@ services:
       response_status_code: 200
       end_point: "/ping"
       startup_delay_time: 20
-    spawn_rank: 1
     depends_on:
       - db1
       - app2

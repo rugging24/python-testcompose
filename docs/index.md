@@ -8,7 +8,7 @@ Testcompose
 
 ---
 
-**Testcompose** provides an easy way of using docker containers for functional and integration testing. It allows for combination of more than one containers and allows for interactions with these containers from your test code without having to write extra scripts for such interactions. I.e providing a docke compose kind of functionality with the extra benefit of being abale to fully control the containers from test codes.
+**Testcompose** provides an easy way of using docker containers for functional and integration testing. It allows for combination of more than one containers and allows for interactions with these containers from your test code without having to write extra scripts for such interactions. I.e providing a docker compose kind of functionality with the extra benefit of being able to fully control the containers from test codes.
 
 This is inspired by the  [testcontainers-python](https://testcontainers-python.readthedocs.io/en/latest/index.html#) project and goes further to add a few additional functionality to imporve software integration testing while allowing the engineer control every aspect of the test.
 
@@ -20,7 +20,7 @@ Install testcompose using pip:
 $ pip install testcompose
 ```
 
-testcompose requires Python 3.6+.
+testcompose requires Python 3.7+.
 
 You can either use a config file of the format:
 
