@@ -16,5 +16,5 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - run: pip install mkdocs-material git-revision-date mkdocs-material mkdocs-material-extensions mkdocstrings mkdocs-autorefs mkdocs markdown markupsafe
+      - run: pip install mkdocs-material mkdocs-git-revision-date-plugin mkdocs-material mkdocs-material-extensions mkdocstrings mkdocs-autorefs mkdocs markdown markupsafe
       - run: mkdocs gh-deploy --force
