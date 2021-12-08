@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "testcompose"
+version = "0.1.0"
+description = ""
+authors = ["Olakunle Olaniyi"]
+license = "Apache License V2"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+mypy = "^0.910"
+pytest = "^6.2.5"
+requests = "^2.26.0"
+types-requests = "^2.25.9"
+PyYAML = "^5.4.1"
+types-PyYAML = "^5.4.10"
+pydantic = "^1.8.2"
+pyproject-toml = "^0.0.11"
+coverage = "^6.0.2"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.6.1"
+docker = "^5.0.3"
+black = "^21.10b0"
+kafka-python = "^2.0.2"
+tox = "^3.24.4"
+pre-commit = "^2.15.0"
+mkdocs-material = "^8.0.4"
+mkdocs-git-revision-date-plugin = "^0.3.1"
+mkdocstrings = "^0.16.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 110
+target-version = ['py37', 'py38', 'py39', 'py310']
+skip-string-normalization = true

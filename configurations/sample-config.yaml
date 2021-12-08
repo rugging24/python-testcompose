@@ -1,0 +1,52 @@
+network:
+  name: some_network_name # this must already exists !!! Default is bridge
+  auto_create: False
+  use_random_network: True
+services:
+  - name: db1
+    image: "postgres:13"
+    auto_remove: True
+    command: ""
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: a
+    exposed_ports:
+      - 5432
+    volumes:
+      - host: "data_volume"
+        container: "/data"
+        mode: "rw"
+    log_wait_parameters:
+      log_line_regex: "database system is ready to accept connections"
+      wait_timeout: 30
+      poll_interval: 2
+  - name: app1
+    image: "node:12"
+    auto_remove: True
+    command: " ls -l "
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: a
+    exposed_ports:
+      - "5432"
+    volumes:
+      - host: "/data"
+        container: "/data"
+        mode: "rw"
+      - host: "/data2"
+        container: "/data2"
+        mode: "ro"
+    log_wait_parameters:
+      log_line_regex: ".*Application startup complete.*"
+      wait_timeout: 30.0
+      poll_interval: 1
+    http_wait_parameters:
+      http_port: "8080"
+      response_status_code: 200
+      end_point: "/ping"
+      startup_delay_time: 20
+    depends_on:
+      - db1
+      - app2
