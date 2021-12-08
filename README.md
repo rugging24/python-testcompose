@@ -1,5 +1,5 @@
 <p align="center" style="margin: 0 0 10px">
-  <img width="350" height="208" src="imgaes/testcompose.png" alt='Testcompose'>
+  <img width="350" height="208" src="docs/images/testcompose.png" alt='Testcompose'>
 </p>
 
 <h1 align="center" style="font-size: 3rem; margin: -15px 0">

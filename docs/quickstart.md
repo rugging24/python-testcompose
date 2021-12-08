@@ -1,7 +1,7 @@
 # QuickStart
 
 
-Create a config object from a dict. See examples [here]()
+Create a config object from a dict. See examples [here](https://github.com/rugging24/python-testcompose/blob/main/tests/containers_fixtures.py)
 
 ```python
 from testcompose.configs.service_config import Config
@@ -9,7 +9,7 @@ from testcompose.configs.service_config import Config
 run_config = Config(test_services=ITestConfig(**config))
 ```
 
-Or from a yaml file. Example [here]()
+Or from a yaml file. Example [here](https://github.com/rugging24/python-testcompose/blob/main/configurations/sample-config.yaml)
 
 ```python
 from testcompose.configs.parse_config import TestConfigParser
