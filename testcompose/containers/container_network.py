@@ -26,7 +26,7 @@ class ContainerNetwork:
         """Network Object
 
         Returns:
-            Network: container network object
+            docker.models.networks.Network: container network object
         """
         return self._container_network
 

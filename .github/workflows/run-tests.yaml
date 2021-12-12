@@ -1,37 +1,19 @@
 name: RunTests
 on: [push]
 jobs:
-  # windows-run:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     max-parallel: 1
-  #     matrix:
-  #       os: [windows-latest]
-  #       python-version: ['3.7', '3.8', '3.9', '3.10']
-  #   steps:
-  #     - name: Code Checkout
-  #       uses: actions/checkout@v2
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Build App Docker Image
-  #       run: docker build -t test-docker-python -f docker/windows/Dockerfile .
-  #     - name: Install tox
-  #       run: pip install tox
-  #     - name: Run Tests in Different Environments
-  #       env:
-  #         PY_VERSION: ${{ matrix.python-version }}
-  #         PY_OS: ${{ matrix.os }}
-  #       run: tox -e "py" + $Env:py_version.replace('.','')
-  linux-run:
+  tests:
+    name: "Tests - Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
-    # needs: [ windows-run ]
     strategy:
       max-parallel: 1
       matrix:
-        os: [ubuntu-latest]
-        python-version: ['3.7']
+        os:
+          - ubuntu-latest
+        python-version:
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+          # - '3.10'
     steps:
       - name: Code Checkout
         uses: actions/checkout@v2
@@ -39,9 +21,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install tox
-        run: pip install tox
-      - name: Run Tests in Different Environments
+      - name: Run Tests in ${{ matrix.python-version }} Environments
         env:
           PY_VERSION: ${{ matrix.python-version }}
-        run: tox -e py${PY_VERSION/'.'/}
+        run: "scripts/run-tests.sh ${{ matrix.python-version }}"
