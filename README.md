@@ -20,13 +20,13 @@ Install testcompose using pip:
 $ pip install testcompose
 ```
 
-testcompose requires Python 3.6+.
+testcompose requires Python 3.7+.
 
-You can either use a config file of the format:
+Using a config file. See the [Quickstart](https://github.com/rugging24/python-testcompose/blob/main/docs/quickstart.md) for other options
 
 ```yaml
 network:
-  name: some_network_name # this must already exists !!! Default is bridge
+  name: some_network_name
   auto_create: False
   use_random_network: True
 services:
@@ -44,6 +44,7 @@ services:
       - host: "data_volume"
         container: "/data"
         mode: "rw"
+        source: "docker" # possible values are `docker` or `local`
     log_wait_parameters:
       log_line_regex: "database system is ready to accept connections"
       wait_timeout: 30
@@ -52,7 +53,7 @@ services:
 
 Verify it as follows:
 
-```pycon
+```python
 from testcompose.parse_config import TestConfigParser
 from testcompose.configs.service_config import Config
 from testcompose.run_containers import RunContainers
@@ -66,14 +67,18 @@ print(my_config.ranked_itest_config_services)
 with RunContainers(
         services=running_config.ranked_itest_config_services
 ) as runner:
-    # Do some work and/or interract with the running containers
+    # Interract with the running containers
 
     assert runner.containers
 
-    # Or get some parameters about the running containers
+    # Use some special parameters of the running containers
 
     app_container = runner.extra_envs["app_container_config_name"]
+
+    # Get the host port a certain exposed container port is mapped to
     mapped_port = app_container.get("DOCKER_PYTHON_MAPPED_PORTS", {}).get("port")
+
+    # where `port` is the exposed port of the container
 
 
 ```
@@ -81,4 +86,8 @@ with RunContainers(
 
 ## Documentation
 
-[Doc](https://rugging24.github.io/python-testcompose/)
+[Quickstart](https://github.com/rugging24/python-testcompose/blob/main/docs/quickstart.md)
+
+[Special-Variables](https://github.com/rugging24/python-testcompose/blob/main/docs/environment_variables.md)
+
+[Full-Doc](https://rugging24.github.io/python-testcompose/)
