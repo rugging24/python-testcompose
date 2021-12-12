@@ -24,12 +24,26 @@ def db_and_app_containers():
             },
             {
                 "name": "application",
-                "image": "test-docker-python",
+                "image": "python:3.9",
                 "auto_remove": True,
-                "command": "",
+                "command": "/bin/bash -x /run_app.sh",
                 "environment": {
                     "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.docker_python_internal_host}:5432/${database.postgres_db}"
                 },
+                "volumes": [
+                    {
+                        "host": "docker-test-files/run_app.sh",
+                        "container": "/run_app.sh",
+                        "mode": "ro",
+                        "source": "local",
+                    },
+                    {
+                        "host": "docker-test-files/app.py",
+                        "container": "/app.py",
+                        "mode": "ro",
+                        "source": "local",
+                    },
+                ],
                 "exposed_ports": ["8000"],
                 "log_wait_parameters": {
                     "log_line_regex": ".*Application startup complete.*",
@@ -72,9 +86,23 @@ def broker_app_and_db_containers():
             },
             {
                 "name": "application",
-                "image": "test-docker-python",
+                "image": "python:3.9",
                 "auto_remove": True,
-                "command": "",
+                "command": "/bin/bash -x /run_app.sh",
+                "volumes": [
+                    {
+                        "host": "docker-test-files/run_app.sh",
+                        "container": "/run_app.sh",
+                        "mode": "ro",
+                        "source": "local",
+                    },
+                    {
+                        "host": "docker-test-files/app.py",
+                        "container": "/app.py",
+                        "mode": "ro",
+                        "source": "local",
+                    },
+                ],
                 "environment": {
                     "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.docker_python_internal_host}:5432/${database.postgres_db}",
                     "KAFKA_BOOTSTRAP_SERVERS": "${kafka.docker_python_internal_host}:29092",

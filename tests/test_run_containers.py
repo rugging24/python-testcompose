@@ -60,7 +60,6 @@ def test_broker_app_and_db_containers(broker_app_and_db_containers) -> None:
             headers=headers,
         )
         assert consume.status_code == 200
-
         assert json.loads(consume.text) == json.loads(version)
 
 

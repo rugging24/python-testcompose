@@ -39,8 +39,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Build App Docker Image
-        run: docker build -t test-docker-python -f docker/linux/Dockerfile .
       - name: Install tox
         run: pip install tox
       - name: Run Tests in Different Environments

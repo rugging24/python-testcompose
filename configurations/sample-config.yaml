@@ -17,6 +17,7 @@ services:
       - host: "data_volume"
         container: "/data"
         mode: "rw"
+        source: "local" # docker
     log_wait_parameters:
       log_line_regex: "database system is ready to accept connections"
       wait_timeout: 30
