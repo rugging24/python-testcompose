@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
+import pathlib
 from typing import Any, Dict, List, Optional
 from docker.client import DockerClient
 from testcompose.models.container import ContainerParam
 from testcompose.models.volume import VolumeMapping
 from docker.errors import ImageNotFound
+from testcompose.models.volume import VolumeSourceTypes
 
 
 class ContainerBuilder(ABC):
@@ -70,13 +72,23 @@ class ContainerBuilder(ABC):
                 host: host volume path or a docker volume name
                 container: path to mount the host volume in the container
                 mode: volume mode [ro|rw]
+                source: source of the volume [local|docker]
+                        local: a file or directory to be mounted
+                        docker: a docker volume (existing or to be created)
 
         Args:
-            volumes (Optional[List[VolumeMapping]]): [description]
+            volumes (Optional[List[VolumeMapping]]): Optional list of volumes to mount on the container
         """
         if volumes:
             for vol in volumes:
-                self._volumes[vol.host] = {"bind": vol.container, "mode": vol.mode}
+                host_bind: Optional[str] = None
+                if vol.source == VolumeSourceTypes.DOCKER_SOURCE:
+                    host_bind = vol.host
+                elif vol.source == VolumeSourceTypes.LOCAL_SOURCE:
+                    host_bind = str(pathlib.Path(vol.host).absolute())
+                if not host_bind:
+                    raise ValueError("Volume source can only be one of local|docker")
+                self._volumes[host_bind] = {"bind": vol.container, "mode": vol.mode}
 
     def with_environment(self, env: Optional[Dict[str, Any]]):
         """Environment variables for running containers
@@ -106,10 +118,10 @@ class ContainerBuilder(ABC):
             self.docker_client.images.pull(repository=self.generic_container_param.image)
 
     def build(self, docker_client: DockerClient) -> None:
-        """Build container parameters
+        """Container parameters
 
         Args:
-            docker_client (DockerClient): [description]
+            docker_client (DockerClient): docker client
         """
         self.docker_client = docker_client
         self.with_environment(self._container_param.environment_variables)
