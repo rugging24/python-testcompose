@@ -3,6 +3,8 @@
 set -xeu
 
 SCRIPT_PATH=$(pwd)
+ls "${SCRIPT_PATH}/testcompose"
+ls "${SCRIPT_PATH}/testcompose/testcompose"
 export PYTHONPATH="${SCRIPT_PATH}/testcompose"
 
 pip install mkdocs-material mkdocs-git-revision-date-plugin \
