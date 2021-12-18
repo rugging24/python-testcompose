@@ -3,6 +3,7 @@
 set -xeu
 
 SCRIPT_PATH=$(pwd)
+export PYTHONPATH="${SCRIPT_PATH}/testcompose"
 
 pip install mkdocs-material mkdocs-git-revision-date-plugin \
     mkdocs-material mkdocs-material-extensions mkdocstrings \
@@ -13,10 +14,11 @@ pip install mkdocs-material mkdocs-git-revision-date-plugin \
 python setup.py sdist bdist_wheel
 twine check dist/*
 
-cd testcompose
-mkdocs build --config-file "${SCRIPT_PATH}"/mkdocs.yml
+# cd testcompose
+mkdocs build
 
-mkdocs gh-deploy --force --config-file "${SCRIPT_PATH}"/mkdocs.yml --remote-branch gh-pages
-
-cd "${SCRIPT_PATH}"
 twine upload dist/*
+
+mkdocs gh-deploy --force #--config-file "${SCRIPT_PATH}"/mkdocs.yml --remote-branch gh-pages
+
+# cd "${SCRIPT_PATH}"
