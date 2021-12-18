@@ -14,6 +14,7 @@ pip install mkdocs-material mkdocs-git-revision-date-plugin \
 python setup.py sdist bdist_wheel
 twine check dist/*
 
+python setup.py install
 mkdocs build
 
 twine upload dist/*
