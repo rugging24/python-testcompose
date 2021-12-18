@@ -13,7 +13,7 @@ pip install mkdocs-material mkdocs-git-revision-date-plugin \
 python setup.py sdist bdist_wheel
 twine check dist/*
 
-cd ../testcompose
+cd testcompose
 mkdocs build --config-file ../mkdocs.yml --remote-branch gh-pages
 
 mkdocs gh-deploy --force --config-file ../mkdocs.yml --remote-branch gh-pages
