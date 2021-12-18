@@ -16,12 +16,14 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: "Build doc"
-        run: mkdocs build
       - name: "Build and Publish to PyPI/Github Pages"
         run: "scripts/build-and-publish-packages.sh"
+      - name: "Build doc"
+        run: mkdocs build
+      - name: "deploy doc"
+        run: mkdocs gh-deploy --force
+      - name: "build package"
+        run: python setup.py sdist bdist_wheel && twine check dist/* && twine upload dist/*
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TWINE_TOKEN }}
-      - name: "deploy doc"
-        run: mkdocs gh-deploy --force
