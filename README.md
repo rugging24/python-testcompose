@@ -6,7 +6,7 @@
 Testcompose
 </h1>
 
-<p align="center"><strong>HTTPX</strong> <em>- A next-generation HTTP client for Python.</em></p>
+<p align="center"><strong>Testcompose</strong> <em>- A clean and better way to test your Python containerized applications.</em></p>
 
 <p align="center">
 <a href="https://github.com/rugging24/python-testcompose/actions">
