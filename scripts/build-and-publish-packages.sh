@@ -14,9 +14,9 @@ python setup.py sdist bdist_wheel
 twine check dist/*
 
 cd testcompose
-mkdocs build --config-file ../mkdocs.yml --remote-branch gh-pages
+mkdocs build --config-file "${SCRIPT_PATH}"/mkdocs.yml
 
-mkdocs gh-deploy --force --config-file ../mkdocs.yml --remote-branch gh-pages
+mkdocs gh-deploy --force --config-file "${SCRIPT_PATH}"/mkdocs.yml --remote-branch gh-pages
 
 cd "${SCRIPT_PATH}"
 twine upload dist/*
