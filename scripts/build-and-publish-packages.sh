@@ -2,14 +2,9 @@
 
 set -xeu
 
-SCRIPT_PATH=$(pwd)
-export PYTHONPATH="${SCRIPT_PATH}"
-
 pip install mkdocs-material mkdocs-git-revision-date-plugin \
     mkdocs-material mkdocs-material-extensions mkdocstrings \
-    mkdocs-autorefs mkdocs markdown markupsafe twine wheel
-
-# # python -c 'import sys, os; sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname("."), "..")))'
+    mkdocs-autorefs mkdocs markdown markupsafe twine wheel coverage
 
 python setup.py sdist bdist_wheel
 twine check dist/*
@@ -20,3 +15,5 @@ mkdocs build
 twine upload dist/*
 
 mkdocs gh-deploy --force
+
+# coverage report --show-missing --skip-covered

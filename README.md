@@ -1,10 +1,21 @@
 <p align="center" style="margin: 0 0 10px">
-  <img width="350" height="208" src="docs/images/testcompose.png" alt='Testcompose'>
+  <img width="350" height="208" src="https://github.com/rugging24/python-testcompose/blob/main/docs/images/testcompose.png" alt='Testcompose'>
 </p>
 
 <h1 align="center" style="font-size: 3rem; margin: -15px 0">
 Testcompose
 </h1>
+
+<p align="center"><strong>HTTPX</strong> <em>- A next-generation HTTP client for Python.</em></p>
+
+<p align="center">
+<a href="https://github.com/rugging24/python-testcompose/actions">
+    <img src="https://github.com/rugging24/python-testcompose/workflows/RunningTests/badge.svg" alt="RunningTests">
+</a>
+<a href="https://pypi.org/project/testcompose/">
+    <img src="https://badge.fury.io/py/testcompose.svg" alt="Testcompose version">
+</a>
+</p>
 
 ---
 

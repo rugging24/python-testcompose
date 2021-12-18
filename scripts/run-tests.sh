@@ -11,8 +11,8 @@ VERSION="${1}"
 pip install tox
 
 # run tox
+echo "testing"
 # tox -e "py${VERSION/'.'/}"
-echo "just running a test"
 
 # # coverage
 # export SOURCE_FILES="testcompose tests"
