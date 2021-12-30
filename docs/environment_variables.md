@@ -115,3 +115,5 @@ services:
 ```
 
 The `self.hostname` and `self.hostport_4450` replacement can only be determined at runtime. Note the `4450` with the host variable. This is because only host port attached to a container exposed port can be deduced. Using a none exposed port for this will result in an error.
+
+**Note:** Refering to containers by their `hostnames` only works in environments where the container network is not the default `bridge` network. i.e One must use an existing docker network or create one by specifying the `use_random_network` option in the config.

@@ -1,5 +1,5 @@
 network:
-  name: some_network_name # this must already exists !!! Default is bridge
+  name: some_network_name
   auto_create: False
   use_random_network: True
 services:

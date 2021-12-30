@@ -44,7 +44,7 @@ class ContainerUtils:
         cmpl = re.compile(pattern=pattern).findall
         for k, v in env_config.items():
             if isinstance(v, str):
-                replaced_varoable = v
+                replaced_variable = v
                 for occurence in cmpl(v):
                     if len(str(occurence).split(".")) != 2:
                         raise ValueError
@@ -78,8 +78,8 @@ class ContainerUtils:
                             raise AttributeError(
                                 "Container self reference only support hostname and hostport. i.e self.hostname|self.hostport_1234"
                             )
-                    replaced_varoable = replaced_varoable.replace(f"${{{occurence}}}", str(_value))
-                _env_config[k] = replaced_varoable
+                    replaced_variable = replaced_variable.replace(f"${{{occurence}}}", str(_value))
+                _env_config[k] = replaced_variable
         return _env_config, _exposed_ports
 
     @staticmethod
