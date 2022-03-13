@@ -36,7 +36,7 @@ class ITestConfigServices(BaseModel):
 
 class ConfigCustomNetwork(BaseModel):
     name: str = NetworkConstants.DEFAULT_NETWORK_MODE
-    auto_create: bool = False
+    auto_create: bool = True
     use_random_network: bool = False
 
 

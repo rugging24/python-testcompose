@@ -25,3 +25,5 @@ class ContainerNetworkSettings(BaseModel):
 class NetworkConstants:
     DEFAULT_NETWORK_MODE: str = "bridge"
     DEFAULT_NETWORK_SCOPE: str = "local"
+    DEFAULT_HOST_NETWORK: str = "host"
+    DEFAULT_NONE_NETWORK: str = "none"

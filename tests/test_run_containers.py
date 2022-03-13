@@ -49,7 +49,6 @@ def test_broker_app_and_db_containers(broker_app_and_db_containers) -> None:
         assert isinstance(json.loads(version), dict)
 
         # produce the version to kafka
-
         produce_kafka_msg(runner, app_env_vars, version)
 
         # consume the message from kafka

@@ -75,16 +75,25 @@ class ContainerNetwork:
 
     def remove_network(self):
         """Cleanup created network"""
-        self.container_network.remove()
+        if self.container_network.name not in [
+            NetworkConstants.DEFAULT_NETWORK_MODE,
+            NetworkConstants.DEFAULT_NONE_NETWORK,
+            NetworkConstants.DEFAULT_HOST_NETWORK,
+        ]:
+            self.container_network.remove()
 
     def _create_group_network(self, network_name: str, label: Dict[str, str] = dict()) -> Network:
-        return self._docker_client.networks.create(  # type: ignore
-            name=network_name,
-            driver=NetworkConstants.DEFAULT_NETWORK_MODE,
-            check_duplicate=True,
-            internal=False,
-            labels=label or None,
-            enable_ipv6=False,
-            attachable=True,
-            scope=NetworkConstants.DEFAULT_NETWORK_SCOPE,
-        )
+        existing_networks: List[Network] = self._docker_client.networks.list(names=[network_name])  # type: ignore
+        if not existing_networks:
+            return self._docker_client.networks.create(  # type: ignore
+                name=network_name,
+                driver=NetworkConstants.DEFAULT_NETWORK_MODE,
+                check_duplicate=True,
+                internal=False,
+                labels=label or None,
+                enable_ipv6=False,
+                attachable=True,
+                scope=NetworkConstants.DEFAULT_NETWORK_SCOPE,
+            )
+        else:
+            return existing_networks[0]
