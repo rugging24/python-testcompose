@@ -60,11 +60,6 @@ class Config:
         for _rank, _service in enumerate(_processed_containers):
             _config_services.update({(_rank, _service.name): _service})
 
-        if all([test_services.network.auto_create, test_services.network.use_random_network]):
-            raise AttributeError(
-                "Both auto_create and use_random_network options of network can not be True!!"
-            )
-
         self.ranked_itest_config_services = RankedServices(
             **{RankedServiceKey.SERVICES: _config_services, RankedServiceKey.NETWORK: test_services.network}
         )

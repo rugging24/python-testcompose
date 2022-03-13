@@ -212,9 +212,9 @@ class RunContainers:
         """
         self.unique_container_label = uuid4().hex
         auto_create_network = (
-            self._ranked_services.network.auto_create
-            if not self._ranked_services.network.use_random_network
-            else self._ranked_services.network.use_random_network
+            True
+            if self._ranked_services.network.use_random_network
+            else self._ranked_services.network.auto_create
         )
         network_name = (
             self._ranked_services.network.name
@@ -222,7 +222,9 @@ class RunContainers:
             else f"{self.unique_container_label}_network"
         )
         self._container_network = ContainerNetwork(
-            docker_client=self.dclient, network_name=network_name, auto_create_network=auto_create_network
+            docker_client=self.dclient,
+            network_name=network_name,
+            auto_create_network=auto_create_network,
         )
         running_containers: Dict[str, GenericContainer] = dict()
         try:
