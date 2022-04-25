@@ -21,12 +21,3 @@ class ClientFromUrl(BaseModel):
     credstor_env: Optional[Dict[str, Any]] = None
     use_ssh_client: Optional[bool] = None
     max_pool_size: Optional[int] = None
-
-
-class Login(BaseModel):
-    username: Optional[str] = None
-    password: Optional[str] = None
-    email: Optional[str] = None
-    registry: Optional[str] = None
-    reauth: Optional[bool] = False
-    dockercfg_path: Optional[str] = None

@@ -1,21 +1,23 @@
-<p align="center" style="margin: 0 0 10px">
-  <img width="350" height="208" src="https://github.com/rugging24/python-testcompose/blob/main/docs/images/testcompose.png" alt='Testcompose'>
-</p>
-
 <h1 align="center" style="font-size: 3rem; margin: -15px 0">
 Testcompose
 </h1>
 
+
+
+<p align="center" style="margin: 30px 0 10px">
+  <img width="350" height="208" src="docs/images/testcompose.png" alt='Testcompose'>
+</p>
+
 <p align="center"><strong>Testcompose</strong> <em>- A clean and better way to test your Python containerized applications.</em></p>
 
-<p align="center">
-<a href="https://github.com/rugging24/python-testcompose/actions">
-    <img src="https://github.com/rugging24/python-testcompose/workflows/RunningTests/badge.svg" alt="RunningTests">
-</a>
-<a href="https://pypi.org/project/testcompose/">
-    <img src="https://badge.fury.io/py/testcompose.svg" alt="Testcompose version">
-</a>
-</p>
+
+
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/testcompose)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/testcompose)
+![PyPI](https://img.shields.io/pypi/v/testcompose)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/testcompose)
+[![Tests](https://github.com/rugging24/python-testcompose/workflows/RunningTests/badge.svg)](https://github.com/rugging24/python-testcompose/blob/main/.github/workflows/tests.yaml)
+
 
 ---
 

@@ -1,7 +1,8 @@
 from typing import Dict, List, Optional
 from docker.models.networks import Network
-from testcompose.models.network import NetworkConstants
 from docker.client import DockerClient
+
+from testcompose.models.network.network import DefaultNeworkDrivers
 
 
 class ContainerNetwork:
@@ -12,14 +13,11 @@ class ContainerNetwork:
     Args:
         docker_client (DockerClient): Docker client
         network_name (str): Name of test network
-        auto_create_network (bool, optional): Create network if it doesn't exists. Defaults to False.
     """
 
-    def __init__(
-        self, docker_client: DockerClient, network_name: str, auto_create_network: bool = False
-    ) -> None:
+    def __init__(self, docker_client: DockerClient, network_name: str) -> None:
         self._docker_client = docker_client
-        self.get_defined_network(network_name, auto_create_network)
+        self._get_defined_network(network_name)
 
     @property
     def container_network(self) -> Network:
@@ -35,34 +33,23 @@ class ContainerNetwork:
         self._container_network = network
 
     @property
-    def network_name(self) -> Optional[str]:
+    def network_name(self) -> str:
         """Network Name
 
         Returns:
-            Optional[str]: Network Name
+            str: Network Name
         """
         return self.container_network.name
 
-    def get_defined_network(self, network_name: str, auto_create_network: bool = False):
+    def _get_defined_network(self, network_name: str):
         """Identify or create container network
-
         Args:
             network_name (str): Network name
-            auto_create_network (bool, optional): If set, create network if it does not exists. Defaults to False.
 
         Raises:
             AttributeError: When network does not exist or can not be created.
         """
-        try:
-            networks: List[Network] = self._docker_client.networks.list(names=[network_name])  # type: ignore
-        except Exception:
-            networks = list()
-        if networks:
-            self.container_network = networks[0]
-        elif not networks and auto_create_network:
-            self.container_network = self._create_group_network(network_name)
-        else:
-            raise AttributeError
+        self.container_network = self._create_group_network(network_name)
 
     @property
     def container_network_id(self) -> Optional[str]:
@@ -75,25 +62,30 @@ class ContainerNetwork:
 
     def remove_network(self):
         """Cleanup created network"""
-        if self.container_network.name not in [
-            NetworkConstants.DEFAULT_NETWORK_MODE,
-            NetworkConstants.DEFAULT_NONE_NETWORK,
-            NetworkConstants.DEFAULT_HOST_NETWORK,
-        ]:
+        if self.container_network.name not in ['bridge', 'none', 'host']:
             self.container_network.remove()
 
-    def _create_group_network(self, network_name: str, label: Dict[str, str] = dict()) -> Network:
-        existing_networks: List[Network] = self._docker_client.networks.list(names=[network_name])  # type: ignore
+    def _create_group_network(
+        self,
+        network_name: str,
+        label: Dict[str, str] = dict(),
+        driver: str = DefaultNeworkDrivers.DEFAULT_BRIDGE_NETWORK,
+    ) -> Network:
+        existing_networks: List[Network] = list()
+        try:
+            existing_networks = self._docker_client.networks.list(names=[network_name])
+        except Exception:
+            pass
         if not existing_networks:
-            return self._docker_client.networks.create(  # type: ignore
+            return self._docker_client.networks.create(
                 name=network_name,
-                driver=NetworkConstants.DEFAULT_NETWORK_MODE,
+                driver=driver,
                 check_duplicate=True,
                 internal=False,
                 labels=label or None,
                 enable_ipv6=False,
                 attachable=True,
-                scope=NetworkConstants.DEFAULT_NETWORK_SCOPE,
+                scope='local',
             )
         else:
             return existing_networks[0]

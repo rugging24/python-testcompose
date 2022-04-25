@@ -4,12 +4,10 @@ import pytest
 @pytest.fixture(scope="module")
 def valid_container_config():
     return {
-        "network": {},
         "services": [
             {
                 "name": "database",
                 "image": "postgres:13",
-                "auto_remove": True,
                 "command": "",
                 "environment": {
                     "POSTGRES_USER": "postgres",
@@ -22,34 +20,29 @@ def valid_container_config():
                 ],
                 "log_wait_parameters": {
                     "log_line_regex": "database system is ready to accept connections",
-                    "wait_timeout": 30,
-                    "poll_interval": 2,
+                    "wait_timeout_ms": 30,
+                    "poll_interval_ms": 2,
                 },
-                "spawn_rank": 0,
             },
             {
                 "name": "application",
                 "image": "node:13",
-                "auto_remove": False,
                 "command": "ls -l",
                 "exposed_ports": [67543, 54432],
                 "volumes": [{"host": "/data", "container": "/app", "mode": "ro"}],
                 "http_wait_parameters": {"http_port": 8081, "response_status_code": 200},
-                "spawn_rank": 1,
                 "depends_on": ["database"],
             },
             {
                 "name": "application2",
                 "image": "node:13",
-                "auto_remove": False,
                 "command": "ls -l",
                 "exposed_ports": [67543, 54432],
                 "volumes": [{"host": "/data", "container": "/app", "mode": "ro"}],
-                "http_wait_parameters": {"http_port": 8081, "response_status_code": 200},
-                "spawn_rank": 2,
+                "https_wait_parameters": {"http_port": 443, "response_status_code": 200},
                 "depends_on": ["database", "application"],
             },
-        ],
+        ]
     }
 
 

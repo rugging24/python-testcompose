@@ -1,5 +1,7 @@
-from typing import Dict, List, Set, Tuple
-from testcompose.models.config import ITestConfig, ITestConfigServices, RankedServices, RankedServiceKey
+from copy import deepcopy
+from typing import Dict, List
+from xmlrpc.client import boolean
+from testcompose.models.config.config_services import RankedConfigServices, ConfigServices, Service
 from testcompose.log_setup import stream_logger
 
 logger = stream_logger(__name__)
@@ -13,14 +15,14 @@ class Config:
     config is set. Cyclic dependency will fail the test before it starts.
 
     Args:
-        test_services (ITestConfig): model resulting from a parsed configuration file.
+        test_services (ConfigServices): model resulting from a parsed configuration file.
     """
 
-    def __init__(self, test_services: ITestConfig) -> None:
-        self._get_container_spawn_precedence(test_services)
+    def __init__(self, test_services: ConfigServices) -> None:
+        self._rank_test_services(test_services)
 
     @property
-    def ranked_itest_config_services(self) -> RankedServices:
+    def ranked_config_services(self) -> RankedConfigServices:
         """Object containing the ordered services from the config
 
         Returns:
@@ -28,21 +30,19 @@ class Config:
         """
         return self._ranked_it_services
 
-    @ranked_itest_config_services.setter
-    def ranked_itest_config_services(self, ranked_services: RankedServices) -> None:
+    @ranked_config_services.setter
+    def ranked_config_services(self, ranked_services: RankedConfigServices) -> None:
         self._ranked_it_services = ranked_services
 
-    def _get_container_spawn_precedence(self, test_services: ITestConfig) -> None:
+    def _rank_test_services(self, test_services: ConfigServices) -> None:
         """
-
         Args:
-            test_services (ITestConfig): model resulting from a parsed configuration file.
+            test_services (ConfigServices): model resulting from a parsed configuration file.
 
         Raises:
             ValueError: raised if test_services is `null`
             AttributeError: raised if no concreate networking is provided
         """
-        _config_services: Dict[Tuple[int, str], ITestConfigServices] = dict()
         if not test_services:
             logger.error("Config content can not be Null")
             raise ValueError
@@ -51,67 +51,66 @@ class Config:
             logger.error("No service was found in the provided config")
             raise ValueError
 
-        _processed_containers: List[ITestConfigServices] = self._compute_container_ranks(
-            processed_containers=list(),
-            processed_container_names=set(),
-            unprocessed_containers=test_services.services,
+        _processed_containers: Dict[str, int] = self._compute_container_ranks(
+            ranked_services=dict(),
+            config_services=test_services,
         )
 
-        for _rank, _service in enumerate(_processed_containers):
-            _config_services.update({(_rank, _service.name): _service})
-
-        self.ranked_itest_config_services = RankedServices(
-            **{RankedServiceKey.SERVICES: _config_services, RankedServiceKey.NETWORK: test_services.network}
-        )
+        _processed_containers_reversed: Dict[int, str] = {
+            rank: service for service, rank in _processed_containers.items()
+        }
+        self.ranked_config_services = RankedConfigServices(ranked_services=_processed_containers_reversed)
 
     def _compute_container_ranks(
         self,
-        processed_containers: List[ITestConfigServices],
-        processed_container_names: Set[str],
-        unprocessed_containers: List[ITestConfigServices],
-    ) -> List[ITestConfigServices]:
+        *,
+        ranked_services: Dict[str, int],
+        config_services: ConfigServices,
+    ) -> Dict[str, int]:
         """The main method that computes the ranking of the services specified
         in the config.
 
         Args:
-            processed_containers (List[ITestConfigServices]): Container object of the services to be tested
-            processed_container_names (Set[str]): the names of the services as specified in the configs that had been ranked
-            unprocessed_containers (List[ITestConfigServices]): the names of the services as specified in
-                                                                the configs yet to be ranked
+            ranked_services (Dict[str, int]): dict container service name and their assigned ranks
+            config_services (ConfigServices): config services generated from the supplied configuration file
 
         Raises:
-            AttributeError: raised to prevent both unprocessed_containers and processed_containers from being `null`
+            AttributeError: raised to prevent empty configuration properties to be passed to this function
             ValueError: rasied when cyclic dependency is detected
 
         Returns:
-            List[ITestConfigServices]: A list of ranked service models.
+            Dict[str, int]: A list of ranked service models.
         """
-        if not unprocessed_containers and not processed_containers:
-            raise AttributeError("Processed and Unprocessed container are both empty")
+        _ranked_services: Dict[str, int] = deepcopy(ranked_services)
+        if not config_services:
+            raise AttributeError("A valid config for test services must be provided")
 
-        if not unprocessed_containers:
-            return processed_containers
+        rank = len(ranked_services.keys())
+        if len(config_services.services.keys()) == len(ranked_services.keys()):
+            return ranked_services
         else:
-            passes: Set[str] = set()
-            for _container in unprocessed_containers:
-                passes.add(_container.name)
-                if not _container.depends_on:
-                    processed_containers.append(_container)
-                    processed_container_names.add(_container.name)
+            for service_name, service in config_services.services.items():
+                if not service.depends_on:
+                    _ranked_services.update({service_name: rank})
                 else:
-                    if set(_container.depends_on).issubset(processed_container_names):
-                        processed_containers.append(_container)
-                        processed_container_names.add(_container.name)
-                    elif not set(_container.depends_on).issubset(processed_container_names) and set(
-                        _container.depends_on
-                    ).issubset(passes):
+                    if set(service.depends_on).issubset(_ranked_services.keys()):
+                        _ranked_services.update({service_name: rank})
+                    elif not set(service.depends_on).issubset(
+                        _ranked_services.keys()
+                    ) and self._check_cyclic_dependency(
+                        [config_services.services[x] for x in _ranked_services.keys()], service_name
+                    ):
                         raise ValueError(
-                            f"Cyclic container dependencies detected: {processed_container_names} <=> {set(_container.depends_on)}"
+                            f"Cyclic container dependencies detected: {service_name} <=> {set(service.depends_on)}"
                         )
-            passes.clear()
-            del passes
+                rank += 1
             return self._compute_container_ranks(
-                processed_containers,
-                processed_container_names,
-                [x for x in unprocessed_containers if x.name not in processed_container_names],
+                ranked_services=_ranked_services, config_services=config_services
             )
+
+    @staticmethod
+    def _check_cyclic_dependency(processed_services: List[Service], dependent_service_name: str) -> boolean:
+        for service in processed_services:
+            if set([dependent_service_name]).issubset(service.depends_on):
+                return True
+        return False
