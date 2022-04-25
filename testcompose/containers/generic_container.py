@@ -84,13 +84,13 @@ class GenericContainer(BaseServiceContainer):
             )
             WaitingUtils.container_status(self.test_container)
             self.reload()
+            LogWaiter.search_container_logs(self.test_container, self._log_waiter)
             if self._http_waiter:
                 mapped_http_port: Dict[str, str] = dict()
                 mapped_http_port[str(self._http_waiter.http_port)] = self.get_exposed_port(
                     str(self._http_waiter.http_port)
                 )
                 EndpointWaiters.wait_for_http(self._http_waiter, mapped_http_port)
-            LogWaiter.search_container_logs(self.test_container, self._log_waiter)
         except Exception as exc:
             print(exc)
             self.stop()

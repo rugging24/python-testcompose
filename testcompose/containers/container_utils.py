@@ -42,11 +42,6 @@ class ContainerUtils:
                     if len(str(occurence).split(".")) != 2:
                         raise ValueError
                     container_name, variable_name = str(occurence).split(".")
-                    if (
-                        container_name.lower() not in running_containers
-                        and container_name.lower() != SupportedPlaceholders.SELF_HOST
-                    ):
-                        raise AttributeError(f"Invalid service name detected: {container_name}")
                     value = None
                     value, _exposed_ports = ContainerUtils._external_ports_variables(
                         running_containers,
@@ -101,10 +96,13 @@ class ContainerUtils:
                 and variable_name.lower() == SupportedPlaceholders.CONTAINER_HOSTNAME
             ):
                 value = container_name
-            elif variable_name.lower() == SupportedPlaceholders.EXTERNAL_PORT:
-                value, _exposed_ports = ContainerUtils._external_port_variables(variable_name, exposed_ports)
-            elif variable_name.lower() == SupportedPlaceholders.CONTAINER_HOST_ADDRESS:
-                value = socket.gethostbyname(socket.gethostname())
+            else:
+                if variable_name.lower().startswith(SupportedPlaceholders.EXTERNAL_PORT):
+                    value, _exposed_ports = ContainerUtils._external_port_variables(
+                        variable_name, exposed_ports
+                    )
+                elif variable_name.lower() == SupportedPlaceholders.CONTAINER_HOST_ADDRESS:
+                    value = socket.gethostbyname(socket.gethostname())
         else:
             value = running_containers[
                 f"{container_name.lower()}"

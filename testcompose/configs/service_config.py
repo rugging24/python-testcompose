@@ -89,21 +89,25 @@ class Config:
         if len(config_services.services.keys()) == len(ranked_services.keys()):
             return ranked_services
         else:
-            for service_name, service in config_services.services.items():
+            services: Dict[str, Service] = {
+                x: y for x, y in config_services.services.items() if x not in _ranked_services
+            }
+            for service_name, service in services.items():
                 if not service.depends_on:
                     _ranked_services.update({service_name: rank})
+                    rank += 1
                 else:
-                    if set(service.depends_on).issubset(_ranked_services.keys()):
-                        _ranked_services.update({service_name: rank})
-                    elif not set(service.depends_on).issubset(
+                    if set(service.depends_on).issubset(
                         _ranked_services.keys()
-                    ) and self._check_cyclic_dependency(
-                        [config_services.services[x] for x in _ranked_services.keys()], service_name
+                    ) and not self._check_cyclic_dependency(
+                        [config_services.services[x] for x in _ranked_services], service_name
                     ):
-                        raise ValueError(
-                            f"Cyclic container dependencies detected: {service_name} <=> {set(service.depends_on)}"
+                        _ranked_services.update({service_name: rank})
+                        rank += 1
+                    elif not set(service.depends_on).issubset(list(config_services.services.keys())):
+                        raise AttributeError(
+                            f"Invalid service name or dependencies detected: {service_name} <=> {set(service.depends_on)}"
                         )
-                rank += 1
             return self._compute_container_ranks(
                 ranked_services=_ranked_services, config_services=config_services
             )

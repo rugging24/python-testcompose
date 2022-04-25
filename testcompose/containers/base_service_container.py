@@ -85,7 +85,7 @@ class BaseServiceContainer(ABC):
             exposed_ports=service.exposed_ports,
         )
         self._with_environment(substituted_env_variables)
-        self._with_exposed_ports(list(set(modified_exposed_ports).union(set(service.exposed_ports))))
+        self._with_exposed_ports(modified_exposed_ports)
         self._with_wait_for_http(service.http_wait_parameters)  # type: ignore
         self._with_volumes(service.volumes)
         self._with_entry_point(service.entrypoint)  # type: ignore

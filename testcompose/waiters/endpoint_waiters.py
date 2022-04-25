@@ -40,9 +40,8 @@ class EndpointWaiters:
                 site_url = site_url + f"{host}:{mapped_port}/{wait_parameter.end_point.lstrip('/')}"
                 print(site_url)
                 response = get(url=site_url.rstrip("/"))
-                if response.status_code != wait_parameter.response_status_code:
-                    response_check = False
-                break
+                if response.status_code == wait_parameter.response_status_code:
+                    break
             except Exception as exc:
                 response_check = False
                 print("HTTP_CHECK_ERROR: %s", exc)
