@@ -1,58 +1,47 @@
-from typing import List, Tuple
+from functools import wraps
+from io import StringIO
 from docker import from_env
-from docker.models.networks import Network
 import pytest
 from pydantic.error_wrappers import ValidationError
 from config_fixtures import valid_container_config, config_with_missing_service_key, config_with_missing_attr
+from testcompose.configs.parse_config import TestConfigParser
 from testcompose.configs.service_config import Config
-from testcompose.models.config import ITestConfig, RankedServices
-from testcompose.models.network import NetworkConstants
+from testcompose.models.config.config_services import ConfigServices, RankedConfigServices
 from testcompose.containers.container_network import ContainerNetwork
+from unittest import mock
+import json
 
 
 def test_get_config_services_more_containers(valid_container_config):
-    computed_services_instance = Config(test_services=ITestConfig(**valid_container_config))
-    provided_service_config: ITestConfig = ITestConfig(**valid_container_config)
+    config_services = None
+    with mock.patch('builtins.open', mock.mock_open(read_data=json.dumps(valid_container_config))):
+        with open('some_file_name') as f2:
+            config_services = TestConfigParser.parse_config(file_name=f2.name)
 
-    assert isinstance(computed_services_instance.ranked_itest_config_services, RankedServices)
-    assert computed_services_instance.ranked_itest_config_services.services
-    assert len(provided_service_config.services) == len(
-        computed_services_instance.ranked_itest_config_services.services
-    )
+    assert config_services
+    assert isinstance(config_services, ConfigServices)
+    test_services = Config(test_services=config_services)
 
-    assert (
-        computed_services_instance.ranked_itest_config_services.network.name
-        == NetworkConstants.DEFAULT_NETWORK_MODE
-    )
+    assert test_services
 
-    _provided_ranks: List[Tuple[int, str]] = list()
-    _computed_ranks: List[Tuple[int, str]] = list()
-    for service in valid_container_config["services"]:
-        _provided_ranks.append((service.get("spawn_rank"), service.get("name")))
+    computed_services = list(test_services.ranked_config_services.ranked_services.values())
+    provided_services = [x["name"] for x in valid_container_config.get("services")]
 
-    for service in computed_services_instance.ranked_itest_config_services.services:
-        _computed_ranks.append((service[0], service[1]))
+    assert isinstance(test_services.ranked_config_services, RankedConfigServices)
+    assert test_services.ranked_config_services.ranked_services
+    assert len(computed_services) == len(provided_services)
+    assert list(set(computed_services).difference(provided_services)) == list()
 
-    assert _provided_ranks == _computed_ranks
-
-    cnetwork = ContainerNetwork(
-        docker_client=from_env(),
-        network_name=computed_services_instance.ranked_itest_config_services.network.name,
-    )
-
-    assert cnetwork.network_name
-    assert cnetwork.container_network
-    assert isinstance(cnetwork.container_network, Network)
-
-    with pytest.raises(AttributeError):
-        ContainerNetwork(docker_client=from_env(), network_name="random_non_existing_network")
+    network_name: str = "random_non_existing_network"
+    container_network = ContainerNetwork(docker_client=from_env(), network_name=network_name)
+    assert container_network.network_name == network_name
 
 
 def test_container_attr_with_no_service(config_with_missing_service_key):
     with pytest.raises(expected_exception=ValidationError):
-        Config(test_services=ITestConfig(**config_with_missing_service_key))
+        Config(test_services=ConfigServices(**config_with_missing_service_key))
 
 
 def test_container_missing_attr(config_with_missing_attr):
     with pytest.raises(expected_exception=ValidationError):
-        Config(test_services=ITestConfig(**config_with_missing_attr))
+        Config(test_services=ConfigServices(**config_with_missing_attr))

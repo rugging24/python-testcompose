@@ -1,12 +1,12 @@
 from typing import Any, Dict
 import yaml
 import os
-from testcompose.models.config import ITestConfig
+from testcompose.models.config.config_services import ConfigServices, Service
 
 
 class TestConfigParser:
     @classmethod
-    def parse_config(cls, file_name: str) -> ITestConfig:
+    def parse_config(cls, file_name: str) -> ConfigServices:
         """parses and verifies test yaml config file
 
         Args:
@@ -17,17 +17,21 @@ class TestConfigParser:
             AttributeError: when config file is empty
 
         Returns:
-            ITestConfig: A ITestConfig object with all named services in the config
+            ConfigServices: A ConfigServices object with all named services in the config
         """
         if not os.path.exists(file_name):
             raise FileNotFoundError(f"Config file {file_name} does not exist!!")
 
-        content: Dict[str, Any] = dict()
+        contents: Dict[str, Any] = dict()
         with open(file_name, 'r') as fh:
-            content = yaml.safe_load(fh)
+            contents = yaml.safe_load(fh)
 
-        if not content:
+        if not contents:
             raise AttributeError(f"Config content can not be empty")
 
-        test_services: ITestConfig = ITestConfig(**content)
+        services: Dict[str, Service] = dict()
+        for service in contents["services"]:
+            services.update({service["name"]: Service(**service)})
+
+        test_services: ConfigServices = ConfigServices(services=services)
         return test_services

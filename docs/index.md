@@ -25,58 +25,53 @@ testcompose requires Python 3.7+.
 You can either use a config file of the format:
 
 ```yaml
-network:
-  name: some_network_name
-  auto_create: False
-  use_random_network: True
 services:
   - name: db1
     image: "postgres:13"
-    auto_remove: True
     command: ""
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: a
+      POSTGRES_PASSWORD: password
     exposed_ports:
       - 5432
     volumes:
       - host: "data_volume"
         container: "/data"
         mode: "rw"
-        source: "docker" # possible values are `docker` or `local`
+        source: "dockervolume" # possible values are `dockervolume` or `filesystem`
     log_wait_parameters:
       log_line_regex: "database system is ready to accept connections"
-      wait_timeout: 30
-      poll_interval: 2
+      wait_timeout_ms: 30
+      poll_interval_ms: 2
 ```
 
 Verify it as follows:
 
-```pycon
+```python
 from testcompose.parse_config import TestConfigParser
 from testcompose.configs.service_config import Config
 from testcompose.run_containers import RunContainers
+from testcompose.models.config.config_services import ConfigServices, Service
 
-my_test_service = TestConfigParser.parse_config(
+my_test_service: ConfigServices = TestConfigParser.parse_config(
     file_name='some-file-name'
 )
-my_config =  Config(test_services=my_test_service)
-print(my_config.ranked_itest_config_services)
+my_config: Config =  Config(test_services=my_test_service)
 
 with RunContainers(
         services=running_config.ranked_itest_config_services
 ) as runner:
     # Interract with the running containers
 
-    assert runner.containers
+    assert runner.running_containers
 
     # Use some special parameters of the running containers
 
-    app_container = runner.extra_envs["app_container_config_name"]
+    app_container = runner.running_containers["app_container_config_name"].config_environment_variables
 
     # Get the host port a certain exposed container port is mapped to
-    mapped_port = app_container.get("DOCKER_PYTHON_MAPPED_PORTS", {}).get("port")
+    mapped_port = app_container.generic_container.get_exposed_port("8000")
 
     # where `port` is the exposed port of the container
 

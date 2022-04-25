@@ -2,7 +2,7 @@ name: DeployDoc
 on:
   workflow_run:
     workflows:
-      - RunningTests
+      - Tests
     branches:
       - main
     types:
