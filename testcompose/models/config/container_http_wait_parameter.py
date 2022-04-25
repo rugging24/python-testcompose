@@ -6,6 +6,7 @@ class HttpWaitParameter(BaseModel):
     response_status_code: int = 200
     startup_delay_time_ms: int = 20000
     end_point: str = '/'
+    use_https: bool = False
 
     @validator('http_port')
     def validate_http_port(cls, v):

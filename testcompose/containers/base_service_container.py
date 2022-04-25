@@ -4,7 +4,7 @@ import pathlib
 import traceback
 from typing import Any, Dict, List, Optional
 from docker.client import DockerClient
-from testcompose.containers.utils import ContainerUtils
+from testcompose.containers.container_utils import ContainerUtils
 from testcompose.models.client.registry_parameters import Login
 from testcompose.models.config.config_services import Service
 from testcompose.models.config.container_http_wait_parameter import HttpWaitParameter
@@ -25,7 +25,6 @@ class BaseServiceContainer(ABC):
         self._host_name: str
         self._network: str
         self._http_waiter: HttpWaitParameter
-        self._https_waiter: HttpWaitParameter
         self._log_waiter: LogWaitParameter
         self._registry = Login()
         self._environments: Dict[str, Any] = dict()
@@ -88,7 +87,6 @@ class BaseServiceContainer(ABC):
         self._with_environment(substituted_env_variables)
         self._with_exposed_ports(list(set(modified_exposed_ports).union(set(service.exposed_ports))))
         self._with_wait_for_http(service.http_wait_parameters)  # type: ignore
-        self._with_wait_for_https(service.https_wait_parameters)  # type: ignore
         self._with_volumes(service.volumes)
         self._with_entry_point(service.entrypoint)  # type: ignore
         self._with_log_waiter(service.log_wait_parameters)  # type: ignore
@@ -124,9 +122,6 @@ class BaseServiceContainer(ABC):
 
     def _with_wait_for_http(self, wait_parameter: HttpWaitParameter) -> None:
         self._http_waiter = wait_parameter
-
-    def _with_wait_for_https(self, wait_parameter: HttpWaitParameter) -> None:
-        self._https_waiter = wait_parameter
 
     def _with_volumes(self, volumes: Optional[List[VolumeMapping]]) -> None:
         """A list of volume mappings to be mounted in the container.

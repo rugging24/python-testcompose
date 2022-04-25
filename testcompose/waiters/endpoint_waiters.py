@@ -16,9 +16,7 @@ class EndpointWaiters:
         return socket.gethostbyname(socket.gethostname())
 
     @staticmethod
-    def _check_endpoint(
-        wait_parameter: HttpWaitParameter, exposed_ports: Dict[str, str], use_https: bool = False
-    ) -> None:
+    def _check_endpoint(wait_parameter: HttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
         """Endpoint health-check for a container. A running service
         with an exposed endpoint is queried and the response code is
         checked with the expected response code.
@@ -33,7 +31,7 @@ class EndpointWaiters:
             bool: Endpoint returned expected status code
         """
         response_check: bool = True
-        site_url: str = "https://" if use_https else "http://"
+        site_url: str = "https://" if wait_parameter.use_https else "http://"
         for _ in range(0, 3):
             sleep(wait_parameter.startup_delay_time_ms / 1000)
             try:
@@ -56,8 +54,3 @@ class EndpointWaiters:
     def wait_for_http(wait_parameter: HttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
         if wait_parameter:
             EndpointWaiters._check_endpoint(wait_parameter, exposed_ports)
-
-    @staticmethod
-    def wait_for_https(wait_parameter: HttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
-        if wait_parameter:
-            EndpointWaiters._check_endpoint(wait_parameter, exposed_ports, True)
