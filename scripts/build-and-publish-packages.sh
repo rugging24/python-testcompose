@@ -3,7 +3,7 @@
 set -xeu
 
 pip install mkdocs-material mkdocs-git-revision-date-plugin \
-    mkdocs-material mkdocs-material-extensions mkdocstrings \
+    mkdocs-material mkdocs-material-extensions mkdocstrings[python-legacy]>=0.18 \
     mkdocs-autorefs mkdocs markdown markupsafe twine wheel coverage
 
 python setup.py sdist bdist_wheel
