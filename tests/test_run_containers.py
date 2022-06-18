@@ -10,7 +10,6 @@ from containers_fixtures import (
     db_and_app_containers_config_services,
     broker_app_and_db_containers_config_services,
 )
-from time import sleep
 
 
 def test_db_and_app_containers(db_and_app_containers, db_and_app_containers_config_services):

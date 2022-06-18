@@ -122,7 +122,6 @@ class RunContainers(BaseDockerClient):
                 processed_containers_services.update({service.name: running_container})
                 time.sleep(self._wait_time_between_container_start)
         except Exception as exc:
-            print(exc)
             self.stop_running_containers(RunningContainers(running_containers=processed_containers_services))
             logger.info("%s", exc)
             raise Exception
