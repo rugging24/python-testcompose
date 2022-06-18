@@ -7,6 +7,9 @@ class RunningContainer(BaseModel):
     config_environment_variables: Dict[str, Any]
     generic_container: Any  # this should be a GenericContainer type
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class RunningContainers(BaseModel):
     running_containers: Dict[str, RunningContainer] = dict()

@@ -15,5 +15,3 @@ mkdocs build
 twine upload dist/*
 
 mkdocs gh-deploy --force
-
-# coverage report --show-missing --skip-covered

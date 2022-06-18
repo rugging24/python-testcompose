@@ -4,16 +4,12 @@ set -eux
 
 if [ "$#" -ne 1 ]; then
     echo "Test requires Python Version"
-    exit 2
+    exit 1
 fi
 VERSION="${1}"
 # install tox
+pip install --upgrade pip
 pip install tox
 
 # run tox
 tox -e "py${VERSION/'.'/}"
-
-# # coverage
-# export SOURCE_FILES="testcompose tests"
-
-# coverage report --show-missing --skip-covered --fail-under=100
