@@ -1,14 +1,19 @@
 from datetime import datetime
+from logging import Logger
 import re
 from time import sleep
 from typing import Optional, Match
 from docker.models.containers import Container
-from testcompose.models.config.container_log_wait_parameters import LogWaitParameter
+from testcompose.models.bootstrap.container_log_wait_parameter import ContainerLogWaitParameter
+from testcompose.log_setup import stream_logger
+
+
+logger: Logger = stream_logger(__name__)
 
 
 class LogWaiter:
     @staticmethod
-    def search_container_logs(test_container: Container, log_parameter: LogWaitParameter) -> None:
+    def search_container_logs(container: Container, log_parameter: ContainerLogWaitParameter) -> None:
         """Search for a given predicate in the container log. Useful to check if a
         container is running and healthy
 
@@ -30,17 +35,16 @@ class LogWaiter:
             raise ValueError
 
         prog = re.compile(log_parameter.log_line_regex, re.MULTILINE).search
-        start = datetime.now()
+        start: datetime = datetime.now()
         output: Optional[Match[str]] = None
         while (datetime.now() - start).total_seconds() < (log_parameter.wait_timeout_ms / 1000):
-            output = prog(test_container.logs().decode())
+            output = prog(container.logs().decode())
             if output:
                 return
             if (datetime.now() - start).total_seconds() > (log_parameter.wait_timeout_ms / 1000):
                 raise TimeoutError(
                     "container %s did not emit logs satisfying predicate in %.3f seconds"
-                    % (test_container.name, float(log_parameter.wait_timeout_ms or 60000))
+                    % (container.name, float(log_parameter.wait_timeout_ms or 60000))
                 )
             sleep(log_parameter.poll_interval_ms / 1000)
-        print("%s", test_container.logs().decode())
-        return
+        logger.info("%s", container.logs().decode())

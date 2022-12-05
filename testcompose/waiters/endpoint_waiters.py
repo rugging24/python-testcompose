@@ -1,8 +1,8 @@
 import socket
 from time import sleep
 from typing import Dict
-from requests import get
-from testcompose.models.config.container_http_wait_parameter import HttpWaitParameter
+from requests import Response, get
+from testcompose.models.bootstrap.container_http_wait_parameter import ContainerHttpWaitParameter
 
 
 class EndpointWaiters:
@@ -16,7 +16,7 @@ class EndpointWaiters:
         return socket.gethostbyname(socket.gethostname())
 
     @staticmethod
-    def _check_endpoint(wait_parameter: HttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
+    def _check_endpoint(wait_parameter: ContainerHttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
         """Endpoint health-check for a container. A running service
         with an exposed endpoint is queried and the response code is
         checked with the expected response code.
@@ -35,11 +35,10 @@ class EndpointWaiters:
         for _ in range(0, 3):
             sleep(wait_parameter.startup_delay_time_ms / 1000)
             try:
-                host = EndpointWaiters._get_container_host_ip()
-                mapped_port = exposed_ports[str(wait_parameter.http_port)]
+                host: str = EndpointWaiters._get_container_host_ip()
+                mapped_port: str = exposed_ports[str(wait_parameter.http_port)]
                 site_url = site_url + f"{host}:{mapped_port}/{wait_parameter.end_point.lstrip('/')}"
-                print(site_url)
-                response = get(url=site_url.rstrip("/"))
+                response: Response = get(url=site_url.rstrip("/"))
                 if response.status_code == wait_parameter.response_status_code:
                     break
             except Exception as exc:
@@ -50,6 +49,6 @@ class EndpointWaiters:
         return
 
     @staticmethod
-    def wait_for_http(wait_parameter: HttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
+    def wait_for_http(wait_parameter: ContainerHttpWaitParameter, exposed_ports: Dict[str, str]) -> None:
         if wait_parameter:
             EndpointWaiters._check_endpoint(wait_parameter, exposed_ports)

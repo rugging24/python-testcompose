@@ -1,8 +1,8 @@
 import re
 import socket
 from copy import copy, deepcopy
-from typing import Any, Dict, List, Tuple
-from testcompose.containers.supported_placeholders import SupportedPlaceholders
+from typing import Any, Dict, List, Optional, Tuple
+from testcompose.models.container.supported_placeholders import SupportedPlaceholders
 from testcompose.models.container.running_container import RunningContainer
 
 
@@ -31,13 +31,13 @@ class ContainerUtils:
         Returns:
             Tuple[Dict[str, Any], List[str]]: A tuple of `env_config` and `exposed_ports`
         """
-        pattern = "\\$\\{([^}]*)}"
+        pattern: str = "\\$\\{([^}]*)}"
         substituted_env_variables: Dict[str, Any] = copy(service_env_variables)
-        modified_exposed_ports = deepcopy(exposed_ports)
+        modified_exposed_ports: List[str] = deepcopy(exposed_ports)
         cmpl = re.compile(pattern=pattern).findall
         for k, v in service_env_variables.items():
             if isinstance(v, str):
-                replaced_variable = v
+                replaced_variable: str = v
                 for occurence in cmpl(v):
                     if len(str(occurence).split(".")) != 2:
                         raise ValueError
@@ -63,12 +63,12 @@ class ContainerUtils:
         Returns:
             str: port number
         """
-        s = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        s.settimeout(2)
-        s.bind(("", 0))
-        _, port = s.getsockname()
-        s.close()
+        _socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        _socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        _socket.settimeout(2)
+        _socket.bind(("", 0))
+        _, port = _socket.getsockname()
+        _socket.close()
         return port
 
     @staticmethod
@@ -78,9 +78,9 @@ class ContainerUtils:
         container_name: str,
         variable_name: str,
         exposed_ports: List[str] = list(),
-    ):
-        value = None
-        _exposed_ports = list()
+    ) -> Tuple[Optional[str], List[str]]:
+        value: Optional[str] = None
+        _exposed_ports: List[str] = list()
         if container_name.lower() == SupportedPlaceholders.SELF_HOST or variable_name.lower() in [
             SupportedPlaceholders.CONTAINER_HOSTNAME,
             SupportedPlaceholders.EXTERNAL_PORT,
@@ -111,15 +111,15 @@ class ContainerUtils:
         return value, _exposed_ports
 
     @staticmethod
-    def _external_port_variables(variable_name: str, exposed_ports: List[str]):
-        _exposed_ports = deepcopy(exposed_ports)
-        container_port = re.sub(SupportedPlaceholders.EXTERNAL_PORT + "_", "", variable_name)
-        host_port = ContainerUtils._get_free_host_port()
+    def _external_port_variables(variable_name: str, exposed_ports: List[str]) -> Tuple[str, List[str]]:
+        _exposed_ports: List[str] = deepcopy(exposed_ports)
+        container_port: str = re.sub(SupportedPlaceholders.EXTERNAL_PORT + "_", "", variable_name)
+        host_port: str = ContainerUtils._get_free_host_port()
         if container_port and container_port not in exposed_ports:
             raise AttributeError(
                 f"self.hostport_{container_port} must be a valid supplied exposed_ports value!"
             )
         _exposed_ports.remove(container_port)
         _exposed_ports.append(f"{host_port}:{container_port}")
-        value = str(host_port)
+        value: str = str(host_port)
         return value, _exposed_ports

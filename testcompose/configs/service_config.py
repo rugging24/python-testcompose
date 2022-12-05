@@ -1,10 +1,14 @@
 from copy import deepcopy
+from logging import Logger
 from typing import Dict, List
-from xmlrpc.client import boolean
-from testcompose.models.config.config_services import RankedConfigServices, ConfigServices, Service
+from testcompose.models.bootstrap.container_service import (
+    RankedContainerServices,
+    ContainerServices,
+    ContainerService,
+)
 from testcompose.log_setup import stream_logger
 
-logger = stream_logger(__name__)
+logger: Logger = stream_logger(__name__)
 
 
 class Config:
@@ -18,11 +22,11 @@ class Config:
         test_services (ConfigServices): model resulting from a parsed configuration file.
     """
 
-    def __init__(self, test_services: ConfigServices) -> None:
+    def __init__(self, test_services: ContainerServices) -> None:
         self._rank_test_services(test_services)
 
     @property
-    def ranked_config_services(self) -> RankedConfigServices:
+    def ranked_config_services(self) -> RankedContainerServices:
         """Object containing the ordered services from the config
 
         Returns:
@@ -31,10 +35,10 @@ class Config:
         return self._ranked_it_services
 
     @ranked_config_services.setter
-    def ranked_config_services(self, ranked_services: RankedConfigServices) -> None:
-        self._ranked_it_services = ranked_services
+    def ranked_config_services(self, ranked_services: RankedContainerServices) -> None:
+        self._ranked_it_services: RankedContainerServices = ranked_services
 
-    def _rank_test_services(self, test_services: ConfigServices) -> None:
+    def _rank_test_services(self, test_services: ContainerServices) -> None:
         """
         Args:
             test_services (ConfigServices): model resulting from a parsed configuration file.
@@ -59,13 +63,13 @@ class Config:
         _processed_containers_reversed: Dict[int, str] = {
             rank: service for service, rank in _processed_containers.items()
         }
-        self.ranked_config_services = RankedConfigServices(ranked_services=_processed_containers_reversed)
+        self.ranked_config_services = RankedContainerServices(ranked_services=_processed_containers_reversed)
 
     def _compute_container_ranks(
         self,
         *,
         ranked_services: Dict[str, int],
-        config_services: ConfigServices,
+        config_services: ContainerServices,
     ) -> Dict[str, int]:
         """The main method that computes the ranking of the services specified
         in the config.
@@ -85,11 +89,11 @@ class Config:
         if not config_services:
             raise AttributeError("A valid config for test services must be provided")
 
-        rank = len(ranked_services.keys())
+        rank: int = len(ranked_services.keys())
         if len(config_services.services.keys()) == len(ranked_services.keys()):
             return ranked_services
         else:
-            services: Dict[str, Service] = {
+            services: Dict[str, ContainerService] = {
                 x: y for x, y in config_services.services.items() if x not in _ranked_services
             }
             for service_name, service in services.items():
@@ -113,7 +117,9 @@ class Config:
             )
 
     @staticmethod
-    def _check_cyclic_dependency(processed_services: List[Service], dependent_service_name: str) -> boolean:
+    def _check_cyclic_dependency(
+        processed_services: List[ContainerService], dependent_service_name: str
+    ) -> bool:
         for service in processed_services:
             if set([dependent_service_name]).issubset(service.depends_on):
                 return True

@@ -9,9 +9,7 @@ from testcompose.models.container.running_container_attributes import (
 
 class WaitingUtils:
     @staticmethod
-    def container_status(
-        test_container: Container, status="running", delay_ms=2000, timeout_ms=40000
-    ) -> bool:
+    def container_status(container: Container, status="running", delay_ms=2000, timeout_ms=40000) -> bool:
         """Method useful for checking a running container status to
         allow for fetching the latest attribute from the container
 
@@ -27,12 +25,12 @@ class WaitingUtils:
         ]:
             raise ValueError("Status must be one of running or exited")
 
-        start = datetime.now()
-        while not (status == (RunningContainerAttributes(**test_container.attrs)).State.Status):
+        start: datetime = datetime.now()
+        while not (status == (RunningContainerAttributes(**container.attrs)).State.Status):  # type: ignore
             if (datetime.now() - start).total_seconds() * 1000 > timeout_ms:
                 print(f"Container status {status} not obtained after {timeout_ms} ms")
                 return False
             sleep(delay_ms / 1000)
-            test_container.reload()
+            container.reload()
         print(f"Found Status {status}")
         return True
