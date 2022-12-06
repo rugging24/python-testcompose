@@ -1,16 +1,10 @@
 import json
 from typing import Any, Dict
-from requests import Response, get, post
+from requests import Response, get
 from testcompose.configs.service_config import Config
 from testcompose.models.bootstrap.container_service import ContainerServices
 from testcompose.models.container.running_container import RunningContainer
 from testcompose.run_containers import RunContainers
-from containers_fixtures import (
-    db_and_app_containers,
-    broker_app_and_db_containers,
-    db_and_app_containers_config_services,
-    broker_app_and_db_containers_config_services,
-)
 
 
 def test_db_and_app_containers(db_and_app_containers, db_and_app_containers_config_services):
