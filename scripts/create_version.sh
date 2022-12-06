@@ -3,6 +3,7 @@
 which git || exit 1
 
 function compute_version() {
+    git fetch --tags
     current_version=$(git describe --tags --abbrev=0)
     if [ ! -z "${current_version}" ]; then
         major_version=$(echo $current_version | awk '{split($0,a,"."); print a[1]}')
