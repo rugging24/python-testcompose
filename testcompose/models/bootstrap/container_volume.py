@@ -8,14 +8,14 @@ class VolumeSourceTypes:
     DOCKER_VOLUME_SOURCE: str = "dockervolume"
 
 
-class VolumeMapping(BaseModel):
+class ContainerVolumeMap(BaseModel):
     host: str
     container: str
     mode: str = 'ro'
     source: str = VolumeSourceTypes.DOCKER_VOLUME_SOURCE
 
     @validator('mode')
-    def validate_mode(cls, v):
+    def validate_mode(cls, v) -> str:
         assert str(v).lower() in ['ro', 'rw']
         return v
 

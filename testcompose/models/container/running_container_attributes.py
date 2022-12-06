@@ -1,11 +1,12 @@
-from enum import Enum
 from pydantic import BaseModel
 from testcompose.models.network.network import ContainerNetworkSettings
+from dataclasses import dataclass
 
 
-class PossibleContainerStates(Enum):
-    RUNNING = 'exited'
-    EXITED = 'running'
+@dataclass(frozen=True)
+class PossibleContainerStates:
+    RUNNING: str = 'running'
+    EXITED: str = 'exited'
 
 
 class ContainerState(BaseModel):

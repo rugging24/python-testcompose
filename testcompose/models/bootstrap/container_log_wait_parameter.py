@@ -1,7 +1,7 @@
 from pydantic import BaseModel, validator
 
 
-class LogWaitParameter(BaseModel):
+class ContainerLogWaitParameter(BaseModel):
     log_line_regex: str
     wait_timeout_ms: int = 60000
     poll_interval_ms: int = 10000

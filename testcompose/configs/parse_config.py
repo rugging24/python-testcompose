@@ -1,12 +1,12 @@
 from typing import Any, Dict
 import yaml
 import os
-from testcompose.models.config.config_services import ConfigServices, Service
+from testcompose.models.bootstrap.container_service import ContainerService, ContainerServices
 
 
 class TestConfigParser:
     @classmethod
-    def parse_config(cls, file_name: str) -> ConfigServices:
+    def parse_config(cls, file_name: str) -> ContainerServices:
         """parses and verifies test yaml config file
 
         Args:
@@ -27,11 +27,11 @@ class TestConfigParser:
             contents = yaml.safe_load(fh)
 
         if not contents:
-            raise AttributeError(f"Config content can not be empty")
+            raise AttributeError("Config content can not be empty")
 
-        services: Dict[str, Service] = dict()
+        services: Dict[str, ContainerService] = dict()
         for service in contents["services"]:
-            services.update({service["name"]: Service(**service)})
+            services.update({service["name"]: ContainerService(**service)})
 
-        test_services: ConfigServices = ConfigServices(services=services)
-        return test_services
+        container_services: ContainerServices = ContainerServices(services=services)
+        return container_services
