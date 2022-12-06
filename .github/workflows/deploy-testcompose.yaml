@@ -13,7 +13,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v2
-        run: git fetch --prune --unshallow
+      - run: git fetch --prune --unshallow
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
