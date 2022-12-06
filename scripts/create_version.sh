@@ -25,6 +25,8 @@ function compute_version() {
     latest_version="${major_version}.${minor_version}.${update_version}"
 
     git tag -a "${latest_version}" -m "creating ${latest_version} tag version"
+    git config user.email "rugging24@gmail.com"
+    git config user.name "Github Action CI User"
     git push origin tag "${latest_version}"
 
     echo ${latest_version}
