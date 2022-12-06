@@ -24,7 +24,7 @@ function compute_version() {
 
     latest_version="${major_version}.${minor_version}.${update_version}"
 
-    git tag "${latest_version}" -a "creating ${latest_version} tag version"
+    git tag -a "${latest_version}" -m "creating ${latest_version} tag version"
     git push origin tag "${latest_version}"
 
     echo ${latest_version}
