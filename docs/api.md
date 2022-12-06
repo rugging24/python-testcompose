@@ -6,7 +6,7 @@
 
 ::: testcompose.configs.service_config.Config
 
-::: testcompose.containers.base_service_container.BaseServiceContainer
+::: testcompose.containers.base_container.BaseContainer
 
 ::: testcompose.containers.container_network.ContainerNetwork
 
@@ -14,7 +14,7 @@
 
 ::: testcompose.containers.generic_container.GenericContainer
 
-::: testcompose.containers.supported_placeholders.SupportedPlaceholders
+::: testcompose.models.container.supported_placeholders.SupportedPlaceholders
 
 ::: testcompose.models.client.client_login.ClientFromEnv
 
@@ -22,19 +22,19 @@
 
 ::: testcompose.models.client.registry_parameters.Login
 
-::: testcompose.models.config.config_services.Service
+::: testcompose.models.bootstrap.container_service.ContainerService
 
-::: testcompose.models.config.config_services.ConfigServices
+::: testcompose.models.bootstrap.container_service.ContainerServices
 
-::: testcompose.models.config.config_services.RankedConfigServices
+::: testcompose.models.bootstrap.container_service.RankedContainerServices
 
-::: testcompose.models.config.container_http_wait_parameter.HttpWaitParameter
+::: testcompose.models.bootstrap.container_http_wait_parameter.ContainerHttpWaitParameter
 
-::: testcompose.models.config.container_log_wait_parameters.LogWaitParameter
+::: testcompose.models.bootstrap.container_log_wait_parameter.ContainerLogWaitParameter
 
-::: testcompose.models.config.volume.VolumeSourceTypes
+::: testcompose.models.bootstrap.container_volume.VolumeSourceTypes
 
-::: testcompose.models.config.volume.VolumeMapping
+::: testcompose.models.bootstrap.container_volume.ContainerVolumeMap
 
 ::: testcompose.models.container.running_container_attributes.PossibleContainerStates
 
@@ -53,7 +53,5 @@
 ::: testcompose.waiters.endpoint_waiters.EndpointWaiters
 
 ::: testcompose.waiters.log_waiters.LogWaiter
-
-::: testcompose.waiters.waiting_utils.WaitingUtils
 
 ::: testcompose.run_containers.RunContainers
