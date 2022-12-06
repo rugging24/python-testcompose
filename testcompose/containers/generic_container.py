@@ -1,37 +1,31 @@
+from datetime import datetime
 from logging import Logger
 import re
 import socket
+from time import sleep
 from docker.client import DockerClient
 from typing import Any, ByteString, Dict, List, Optional, Tuple, Union
 from docker.models.containers import Container
 from docker.errors import APIError
 from testcompose.containers.base_container import BaseContainer
 from testcompose.containers.container_network import ContainerNetwork
-from testcompose.models.bootstrap.container_service import ContainerService
-from testcompose.models.container.running_container import RunningContainer
-from testcompose.models.container.running_container_attributes import RunningContainerAttributes
+from testcompose.models.container.running_container_attributes import (
+    PossibleContainerStates,
+    RunningContainerAttributes,
+)
 from testcompose.models.network.network import ContainerMappedPorts
 from testcompose.waiters.endpoint_waiters import EndpointWaiters
 from testcompose.waiters.log_waiters import LogWaiter
-from testcompose.waiters.waiting_utils import WaitingUtils
 from testcompose.log_setup import stream_logger
+from testcompose.waiters.waiting_utils import is_container_still_running
 
 
 logger: Logger = stream_logger(__name__)
 
 
 class GenericContainer(BaseContainer):
-    def __init__(
-        self,
-        docker_client: DockerClient,
-        network_name: str,
-        service: ContainerService,
-        processed_services: Dict[str, RunningContainer],
-    ) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self._docker_client: DockerClient = docker_client
-        self.container_network = ContainerNetwork(docker_client, network_name)
-        self.with_service(service, processed_services, self.container_network.name)  # type: ignore
 
     @property
     def container_network(self) -> ContainerNetwork:
@@ -68,36 +62,61 @@ class GenericContainer(BaseContainer):
         """
         self._container_attr: RunningContainerAttributes = RunningContainerAttributes(**atrr)
 
-    def start(self) -> None:
+    def start(self, docker_client: DockerClient) -> Container:
         """Start a container"""
-        if not self._docker_client.ping():
+        if not docker_client.ping():
             raise RuntimeError("Docker Client not Running. Please check your docker settings and try again")
 
-        try:
-            self.container = self._docker_client.containers.run(
-                image=self.image,
-                command=self.command,
-                detach=True,
-                environment=self.container_environment_variables,
-                ports=self.ports,
-                volumes=self.volumes,
-                entrypoint=self.entry_point,
-                auto_remove=True,
-                remove=True,
-                network=self.network,
-                hostname=self.host_name,
-            )  # type: ignore
-            self.reload()
-            LogWaiter.search_container_logs(self.container, self._log_waiter)  # type: ignore
-            if self.http_waiter:
-                mapped_http_port: Dict[str, str] = dict()
-                mapped_http_port[str(self.http_waiter.http_port)] = self.get_exposed_port(  # type: ignore
-                    str(self.http_waiter.http_port)
-                )
-                EndpointWaiters.wait_for_http(self._http_waiter, mapped_http_port)
-        except Exception as exc:
-            logger.error(exc)
-            self.stop()
+        return docker_client.containers.run(
+            image=self.image,
+            command=self.command,
+            detach=True,
+            environment=self.container_environment_variables,
+            ports=self.ports,
+            volumes=self.volumes,
+            entrypoint=self.entry_point,
+            auto_remove=True,
+            remove=True,
+            network=self.network,
+            hostname=self.host_name,
+        )  # type: ignore
+
+    def check_container_health(self, docker_client: DockerClient, timeout: int = 120) -> None:
+        start_time: datetime = datetime.now()
+        while (datetime.now() - start_time).total_seconds() < timeout:
+            logger.info(
+                f"Waiting for containe:{self.container.name} status to \
+                change from {self.container.status} to {PossibleContainerStates.RUNNING}"
+            )
+            self.container.reload()
+            if self.container.status == PossibleContainerStates.RUNNING:
+                logger.info(f"Container:{self.container.name} status changed to {self.container.status}")
+                break
+            sleep(2)
+
+        self.reload(docker_client, self.get_container_id())
+        if self.container.status != PossibleContainerStates.RUNNING:
+            for line in self.container.logs(stream=True):
+                logger.debug(line.decode())
+            raise RuntimeError(f"Container is in an unwanted state {self.container.status}")
+
+        self.reload(docker_client, self.get_container_id())
+
+        LogWaiter.search_container_logs(docker_client, self.container, self.log_waiter)
+
+        self.reload(docker_client, self.get_container_id())
+
+        if self.http_waiter:
+            mapped_http_port: Dict[str, str] = dict()
+            mapped_http_port[str(self.http_waiter.http_port)] = self.get_exposed_port(  # type: ignore
+                str(self.http_waiter.http_port)
+            )
+            EndpointWaiters.wait_for_http(
+                docker_client,
+                self.get_container_id(),  # type: ignore
+                self.http_waiter,
+                mapped_http_port,  # type: ignore
+            )
 
     def stop(self, force=True, delete_volume=True) -> None:
         """Stop a running container
@@ -111,12 +130,11 @@ class GenericContainer(BaseContainer):
         except APIError as exc:
             logger.error(exc)
 
-    def reload(self) -> None:
+    def reload(self, docker_client, container_id) -> None:
         """Reload the attributes of a running container"""
-        self.container.reload()
-        self.container_attr = self.container.attrs  # type: ignore
-        if not WaitingUtils.container_status(self.container):
-            raise RuntimeError("Container could not be started")
+        if is_container_still_running(docker_client, container_id):
+            self.container.reload()
+            self.container_attr = self.container.attrs  # type: ignore
 
     def get_exposed_port(self, port: str) -> Optional[str]:
         """Get host port bound to the container exposed port
@@ -143,13 +161,10 @@ class GenericContainer(BaseContainer):
         """
         mapped_ports: Dict[str, str] = dict()
         ports: Dict[str, Any] = self.container_attr.NetworkSettings.Ports
-        #
         for port in ports:
             container_port = re.sub("[^0-9]", "", port)
             if container_port in exposed_ports and ports[port] and isinstance(ports[port], list):
-                print(ports, ports[port])
                 host_ports: ContainerMappedPorts = ContainerMappedPorts(**(ports[port][0]))
-                print(host_ports)
                 mapped_ports.update({container_port: host_ports.HostPort})
         return mapped_ports
 

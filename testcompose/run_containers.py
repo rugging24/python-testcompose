@@ -14,6 +14,7 @@ from testcompose.models.bootstrap.container_service import (
     ContainerService,
 )
 from testcompose.models.container.running_container import RunningContainer, RunningContainers
+from docker.errors import APIError
 
 
 logger: Logger = stream_logger(__name__)
@@ -57,32 +58,34 @@ class RunContainers(BaseDockerClient):
     def unique_container_label(self, label: str) -> None:
         self._unique_container_label: str = label
 
-    async def __aenter__(self) -> RunningContainers:
-        return await self.run_containers()
+    def __enter__(self) -> RunningContainers:
+        return self.run_containers()
 
-    def __aexit__(self, exc_type, exc_value, exc_tb) -> None:
+    def __exit__(self, exc_type, exc_value, exc_tb) -> None:
         self.stop_running_containers()
         if exc_tb and exc_type:
             logger.info("%s[%s]: %s", exc_type, exc_value, exc_tb)
 
-    async def run_containers(self) -> RunningContainers:
+    def run_containers(self) -> RunningContainers:
         self.unique_container_label = uuid4().hex
         network_name: str = f"{self.unique_container_label}_network"
         processed_containers_services: Dict[str, RunningContainer] = dict()
 
-        try:
-            for rank in sorted(self._ranked_config_services.ranked_services.keys()):
-                service: ContainerService = self._config_services.services[
-                    self._ranked_config_services.ranked_services[rank]
-                ]
-                self.pull_docker_image(service.image)
-                generic_container: GenericContainer = GenericContainer(
-                    docker_client=self.docker_client,
-                    network_name=network_name,
-                    service=service,
-                    processed_services=processed_containers_services,
-                )
-                generic_container.start()
+        for rank in sorted(self._ranked_config_services.ranked_services.keys()):
+            service: ContainerService = self._config_services.services[
+                self._ranked_config_services.ranked_services[rank]
+            ]
+            self.pull_docker_image(service.image)
+            generic_container: GenericContainer = GenericContainer()
+            generic_container.container_network = ContainerNetwork(self.docker_client, network_name)
+            generic_container.with_service(
+                service,
+                processed_containers_services,
+                generic_container.container_network.name,  # type: ignore
+            )
+            try:
+                generic_container.container = generic_container.start(self.docker_client)
+                generic_container.check_container_health(self.docker_client)
                 running_container: RunningContainer = RunningContainer(
                     service_name=service.name,
                     config_environment_variables=generic_container.container_environment_variables,
@@ -90,10 +93,12 @@ class RunContainers(BaseDockerClient):
                 )
                 processed_containers_services.update({service.name: running_container})
                 time.sleep(self._wait_time_between_container_start)
-        except Exception as exc:
-            self.stop_running_containers(RunningContainers(running_containers=processed_containers_services))
-            logger.error("%s", exc)
-            raise Exception
+            except Exception as exc:
+                logger.error(exc)
+                self.stop_running_containers(
+                    RunningContainers(running_containers=processed_containers_services)
+                )
+                raise APIError(exc)
         logger.info("The following containers were started: %s", list(processed_containers_services.keys()))
         self.running_containers = RunningContainers(running_containers=processed_containers_services)
         return self.running_containers
