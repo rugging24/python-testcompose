@@ -1,6 +1,7 @@
 #!/bin/bash
 
 which git || exit 1
+
 function compute_version() {
     current_version=$(git describe --tags --abbrev=0)
     if [ ! -z "${current_version}" ]; then

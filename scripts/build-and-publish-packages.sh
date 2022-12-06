@@ -4,10 +4,10 @@ set -xeu
 
 pip install mkdocs-material mkdocs-git-revision-date-plugin \
     mkdocs-material mkdocs-material-extensions mkdocstrings[python-legacy]>=0.18 \
-    mkdocs-autorefs mkdocs markdown markupsafe twine wheel coverage
+    mkdocs-autorefs mkdocs markdown markupsafe twine wheel coverage git
 
 
-bash scripts/create_version.sh
+bash -x scripts/create_version.sh
 
 python setup.py sdist bdist_wheel
 twine check dist/*
