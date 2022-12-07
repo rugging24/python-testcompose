@@ -3,7 +3,8 @@
 which git || exit 1
 
 function compute_version() {
-    current_version=$(git describe --tags --abbrev=0)
+    git fetch --tags
+    current_version="0.1.0" #$(git describe --tags --abbrev=0)
     if [ ! -z "${current_version}" ]; then
         major_version=$(echo $current_version | awk '{split($0,a,"."); print a[1]}')
         minor_version=$(echo $current_version | awk '{split($0,a,"."); print a[2]}')
@@ -13,7 +14,7 @@ function compute_version() {
             update_version=0
             minor_version=$((${minor_version} + 1))
         else
-            update_version+=1
+            update_version=$(($update_version + 1))
         fi
 
         if [ $((${minor_version} + 1)) -ge 11 ]; then
@@ -24,10 +25,10 @@ function compute_version() {
 
     latest_version="${major_version}.${minor_version}.${update_version}"
 
-    git config user.email "rugging24@gmail.com"
-    git config user.name "Github Action CI User"
-    git tag -a "${latest_version}" -m "creating ${latest_version} tag version"
-    git push origin tag "${latest_version}"
+    # git config user.email "rugging24@gmail.com"
+    # git config user.name "Github Action CI User"
+    # git tag -a "${latest_version}" -m "creating ${latest_version} tag version"
+    # git push origin tag "${latest_version}"
 
     echo ${latest_version}
 }
