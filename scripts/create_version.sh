@@ -3,17 +3,18 @@
 which git || exit 1
 
 function compute_version() {
+    git fetch --tags
     current_version=$(git describe --tags --abbrev=0)
     if [ ! -z "${current_version}" ]; then
         major_version=$(echo $current_version | awk '{split($0,a,"."); print a[1]}')
         minor_version=$(echo $current_version | awk '{split($0,a,"."); print a[2]}')
         update_version=$(echo $current_version | awk '{split($0,a,"."); print a[3]}')
 
-        if [ $((${update_version} + 1)) -ge 11 ]; then
+        if [ $(($update_version + 1)) -ge 11 ]; then
             update_version=0
             minor_version=$((${minor_version} + 1))
         else
-            update_version+=1
+            update_version=$(($update_version + 1))
         fi
 
         if [ $((${minor_version} + 1)) -ge 11 ]; then
