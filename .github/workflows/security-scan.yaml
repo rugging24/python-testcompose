@@ -1,0 +1,12 @@
+name: SnykScanner
+on: push
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --fail-on=upgradable  --fail-on=patchable --show-vulnerable-paths==all --prune-repeated-subdependencies
