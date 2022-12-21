@@ -1,17 +1,20 @@
 name: Tests
-on:
-  workflow_run:
-    workflows:
-      - SnykScanner
-    branches:
-      - '**'
-    types:
-      - completed
+on: [push]
 jobs:
+  security:
+    name: Snyk Security Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --fail-on=upgradable  --fail-on=patchable --show-vulnerable-paths=all --prune-repeated-subdependencies
   tests:
     name: "Tests - Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     strategy:
       max-parallel: 1
       matrix:
