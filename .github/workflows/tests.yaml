@@ -9,6 +9,7 @@ jobs:
   tests:
     name: "Tests - Python ${{ matrix.python-version }}"
     runs-on: ${{ matrix.os }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     strategy:
       max-parallel: 1
       matrix:
