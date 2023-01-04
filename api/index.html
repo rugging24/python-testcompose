@@ -12,8 +12,12 @@
       
         <link rel="canonical" href="https://rugging24.github.io/python-testcompose/api/">
       
+      
+        <link rel="prev" href="../environment_variables/">
+      
+      
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
     
     
       
@@ -21,15 +25,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.f56500e0.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#795649">
-        
       
       
 
@@ -3004,6 +3003,7 @@
                   
 
 
+
 <h1 id="developer-reference">Developer Reference</h1>
 
 
@@ -3216,7 +3216,7 @@ testcompose.configs.parse_config.TestConfigParser        </code>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">TestConfigParser</span><span class="p">:</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">parse_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContainerServices</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;parses and verifies test yaml config file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;parses and verifies test yaml config file</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            file_name (str): absolutel path of the config file</span>
@@ -3333,7 +3333,7 @@ testcompose.configs.parse_config.TestConfigParser        </code>
           <summary>Source code in <code>testcompose/configs/parse_config.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">parse_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ContainerServices</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;parses and verifies test yaml config file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;parses and verifies test yaml config file</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        file_name (str): absolutel path of the config file</span>
@@ -3421,7 +3421,7 @@ config is set. Cyclic dependency will fail the test before it starts.</p>
         <details class="quote">
           <summary>Source code in <code>testcompose/configs/service_config.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;This class consumes the model created from a config file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class consumes the model created from a config file.</span>
 <span class="sd">    This is an important class that sets the precedence of how the</span>
 <span class="sd">    different containers are to be started and stopped. Usually, the</span>
 <span class="sd">    precedence are set correctly if the `depends_on` parameter of the</span>
@@ -3436,7 +3436,7 @@ config is set. Cyclic dependency will fail the test before it starts.</p>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ranked_config_services</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RankedContainerServices</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Object containing the ordered services from the config</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Object containing the ordered services from the config</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            RankedServices: ranked container services</span>
@@ -3448,7 +3448,7 @@ config is set. Cyclic dependency will fail the test before it starts.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ranked_it_services</span><span class="p">:</span> <span class="n">RankedContainerServices</span> <span class="o">=</span> <span class="n">ranked_services</span>
 
     <span class="k">def</span> <span class="nf">_rank_test_services</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_services</span><span class="p">:</span> <span class="n">ContainerServices</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            test_services (ConfigServices): model resulting from a parsed configuration file.</span>
 
@@ -3480,7 +3480,7 @@ config is set. Cyclic dependency will fail the test before it starts.</p>
         <span class="n">ranked_services</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">config_services</span><span class="p">:</span> <span class="n">ContainerServices</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;The main method that computes the ranking of the services specified</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The main method that computes the ranking of the services specified</span>
 <span class="sd">        in the config.</span>
 
 <span class="sd">        Args:</span>
@@ -3705,7 +3705,7 @@ testcompose.containers.base_container.BaseContainer        </code>
         <span class="n">processed_containers_services</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RunningContainer</span><span class="p">],</span>
         <span class="n">network</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseContainer&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The initialization method that converts a config</span>
 <span class="sd">        service into a Generic Container. It leverages other</span>
 <span class="sd">        internal _with methods to assign the complete container</span>
@@ -3742,7 +3742,7 @@ testcompose.containers.base_container.BaseContainer        </code>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_exposed_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ports</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;List of exposed port to be assigned random port</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of exposed port to be assigned random port</span>
 <span class="sd">        numbers on the host. Random ports are exposed to the</span>
 <span class="sd">        host. A fixed port can be assigned on the host by providing</span>
 <span class="sd">        the port in the format **[host_port:container_port]**</span>
@@ -3753,17 +3753,34 @@ testcompose.containers.base_container.BaseContainer        </code>
         <span class="n">exposed_ports</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">ports</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">:</span>
-                <span class="n">_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_ports</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">exposed_ports</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_ports</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_ports</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">exposed_ports</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_exposed_ports</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\s)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">_port</span> <span class="ow">in</span> <span class="n">_ports</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_port</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">exposed_ports</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_ports</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_ports</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">exposed_ports</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">_port</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">exposed_ports</span>
+
+    <span class="k">def</span> <span class="nf">_generate_exposed_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">matches</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\-&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="n">unprocessed_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">unprocessed_ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Start exposed port </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2"> must be less than end exposed port </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2"> for port ranges!&quot;</span>
+                <span class="p">)</span>
+            <span class="n">unprocessed_ports</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Allowed exposed port format is host:container or port1 - port2&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unprocessed_ports</span>
 
     <span class="k">def</span> <span class="nf">_container_volumes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">volumes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">ContainerVolumeMap</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;A list of volume mappings to be mounted in the container.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of volume mappings to be mounted in the container.</span>
 
 <span class="sd">            VolumeMapping:</span>
 <span class="sd">                host: host volume path or a docker volume name</span>
@@ -4155,7 +4172,7 @@ had already been initiated and the container is running.</p></td>
     <span class="n">processed_containers_services</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RunningContainer</span><span class="p">],</span>
     <span class="n">network</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseContainer&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The initialization method that converts a config</span>
 <span class="sd">    service into a Generic Container. It leverages other</span>
 <span class="sd">    internal _with methods to assign the complete container</span>
@@ -4254,7 +4271,7 @@ Contians utility to create and cleanup network.</p>
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/container_network.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">ContainerNetwork</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Network management for running container.This class ensures</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Network management for running container.This class ensures</span>
 <span class="sd">    all containers in the same test belong to the same network.</span>
 <span class="sd">    Contians utility to create and cleanup network.</span>
 
@@ -4269,7 +4286,7 @@ Contians utility to create and cleanup network.</p>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Network</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Network Object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Network Object</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            docker.models.networks.Network: container network object</span>
@@ -4475,7 +4492,7 @@ testcompose.containers.container_utils.ContainerUtils        </code>
         <span class="n">service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">exposed_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Utility method to replace placeholders in the service containers.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Utility method to replace placeholders in the service containers.</span>
 <span class="sd">        Placeholders are usually of the form *${container_name.containerenv_variable}*.</span>
 
 <span class="sd">        Args:</span>
@@ -4519,7 +4536,7 @@ testcompose.containers.container_utils.ContainerUtils        </code>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_free_host_port</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get a free random port number from the container host</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a free random port number from the container host</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: port number</span>
@@ -4698,7 +4715,7 @@ Placeholders are usually of the form <em>${container_name.containerenv_variable}
     <span class="n">service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">exposed_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Utility method to replace placeholders in the service containers.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility method to replace placeholders in the service containers.</span>
 <span class="sd">    Placeholders are usually of the form *${container_name.containerenv_variable}*.</span>
 
 <span class="sd">    Args:</span>
@@ -4797,7 +4814,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">container_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunningContainerAttributes</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Running container attributes</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Running container attributes</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            RunningContainerAttributes: Container attribute object</span>
@@ -4806,7 +4823,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
 
     <span class="nd">@container_attr</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">container_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atrr</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Running container attributes. Execute reload() to refresh this</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Running container attributes. Execute reload() to refresh this</span>
 <span class="sd">        property.</span>
 
 <span class="sd">        Args:</span>
@@ -4815,7 +4832,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <span class="bp">self</span><span class="o">.</span><span class="n">_container_attr</span><span class="p">:</span> <span class="n">RunningContainerAttributes</span> <span class="o">=</span> <span class="n">RunningContainerAttributes</span><span class="p">(</span><span class="o">**</span><span class="n">atrr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docker_client</span><span class="p">:</span> <span class="n">DockerClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Container</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Start a container&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start a container&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">docker_client</span><span class="o">.</span><span class="n">ping</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Docker Client not Running. Please check your docker settings and try again&quot;</span><span class="p">)</span>
 
@@ -4871,7 +4888,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">delete_volume</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Stop a running container</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop a running container</span>
 <span class="sd">        Args:</span>
 <span class="sd">            force (bool, optional): [description]. Defaults to True.</span>
 <span class="sd">            delete_volume (bool, optional): [description]. Defaults to True.</span>
@@ -4883,13 +4900,13 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docker_client</span><span class="p">,</span> <span class="n">container_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Reload the attributes of a running container&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reload the attributes of a running container&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">is_container_still_running</span><span class="p">(</span><span class="n">docker_client</span><span class="p">,</span> <span class="n">container_id</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">container_attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">attrs</span>  <span class="c1"># type: ignore</span>
 
     <span class="k">def</span> <span class="nf">get_exposed_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get host port bound to the container exposed port</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get host port bound to the container exposed port</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            port (str): container exposed port</span>
@@ -4902,7 +4919,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_mapped_container_ports</span><span class="p">([</span><span class="n">port</span><span class="p">])[</span><span class="n">port</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get_mapped_container_ports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exposed_ports</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Host port bound to the container returned as a k/v of the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Host port bound to the container returned as a k/v of the</span>
 <span class="sd">        container exposed port as key and the host bound port as the value.</span>
 
 <span class="sd">        Args:</span>
@@ -4914,14 +4931,14 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <span class="n">mapped_ports</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">ports</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_attr</span><span class="o">.</span><span class="n">NetworkSettings</span><span class="o">.</span><span class="n">Ports</span>
         <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">ports</span><span class="p">:</span>
-            <span class="n">container_port</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+            <span class="n">container_port</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[^0-9]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">container_port</span> <span class="ow">in</span> <span class="n">exposed_ports</span> <span class="ow">and</span> <span class="n">ports</span><span class="p">[</span><span class="n">port</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ports</span><span class="p">[</span><span class="n">port</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="n">host_ports</span><span class="p">:</span> <span class="n">ContainerMappedPorts</span> <span class="o">=</span> <span class="n">ContainerMappedPorts</span><span class="p">(</span><span class="o">**</span><span class="p">(</span><span class="n">ports</span><span class="p">[</span><span class="n">port</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
                 <span class="n">mapped_ports</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">container_port</span><span class="p">:</span> <span class="n">host_ports</span><span class="o">.</span><span class="n">HostPort</span><span class="p">})</span>
         <span class="k">return</span> <span class="n">mapped_ports</span>
 
     <span class="k">def</span> <span class="nf">get_container_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Container id</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Container id</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[str]: Container Id</span>
@@ -4931,7 +4948,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">get_container_host_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Container Host IP address</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Container Host IP address</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: container host IP Address</span>
@@ -4939,7 +4956,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">exe_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ByteString</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Execute a command inside a container after it has started running.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute a command inside a container after it has started running.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            command (Union[str, List[str]]): command to run in the container</span>
@@ -5175,7 +5192,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">exe_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ByteString</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Execute a command inside a container after it has started running.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a command inside a container after it has started running.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        command (Union[str, List[str]]): command to run in the container</span>
@@ -5229,7 +5246,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">get_container_host_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Container Host IP address</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container Host IP address</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: container host IP Address</span>
@@ -5275,7 +5292,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">get_container_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Container id</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container id</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Optional[str]: Container Id</span>
@@ -5342,7 +5359,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">get_exposed_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Get host port bound to the container exposed port</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get host port bound to the container exposed port</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        port (str): container exposed port</span>
@@ -5378,7 +5395,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docker_client</span><span class="p">,</span> <span class="n">container_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Reload the attributes of a running container&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reload the attributes of a running container&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_container_still_running</span><span class="p">(</span><span class="n">docker_client</span><span class="p">,</span> <span class="n">container_id</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">container_attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="o">.</span><span class="n">attrs</span>  <span class="c1"># type: ignore</span>
@@ -5407,7 +5424,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docker_client</span><span class="p">:</span> <span class="n">DockerClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Container</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Start a container&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start a container&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">docker_client</span><span class="o">.</span><span class="n">ping</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Docker Client not Running. Please check your docker settings and try again&quot;</span><span class="p">)</span>
 
@@ -5474,7 +5491,7 @@ testcompose.containers.generic_container.GenericContainer            (<a class="
         <details class="quote">
           <summary>Source code in <code>testcompose/containers/generic_container.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">delete_volume</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Stop a running container</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stop a running container</span>
 <span class="sd">    Args:</span>
 <span class="sd">        force (bool, optional): [description]. Defaults to True.</span>
 <span class="sd">        delete_volume (bool, optional): [description]. Defaults to True.</span>
@@ -6847,7 +6864,7 @@ testcompose.models.bootstrap.container_service.ContainerServices            (<sp
         <details class="quote">
           <summary>Source code in <code>testcompose/models/bootstrap/container_service.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">ContainerServices</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ConfigServices holds Dict of Service and their names</span>
 <span class="sd">    Args:</span>
 <span class="sd">        services: Dict[name, Service]</span>
@@ -6944,7 +6961,7 @@ be started.</p>
         <details class="quote">
           <summary>Source code in <code>testcompose/models/bootstrap/container_service.py</code></summary>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">RankedContainerServices</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RankedConfigServices holds a dict of services ranked in the order they are to</span>
 <span class="sd">    be started.</span>
 <span class="sd">    Args:</span>
@@ -8830,7 +8847,7 @@ testcompose.waiters.endpoint_waiters.EndpointWaiters        </code>
           <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">EndpointWaiters</span><span class="p">:</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_container_host_ip</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The host IP where the container runs</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The host IP where the container runs</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: host IP</span>
@@ -8844,7 +8861,7 @@ testcompose.waiters.endpoint_waiters.EndpointWaiters        </code>
         <span class="n">wait_parameter</span><span class="p">:</span> <span class="n">ContainerHttpWaitParameter</span><span class="p">,</span>
         <span class="n">exposed_ports</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Endpoint health-check for a container. A running service</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Endpoint health-check for a container. A running service</span>
 <span class="sd">        with an exposed endpoint is queried and the response code is</span>
 <span class="sd">        checked with the expected response code.</span>
 
@@ -8858,7 +8875,6 @@ testcompose.waiters.endpoint_waiters.EndpointWaiters        </code>
 <span class="sd">            bool: Endpoint returned expected status code</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">site_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="k">if</span> <span class="n">wait_parameter</span><span class="o">.</span><span class="n">use_https</span> <span class="k">else</span> <span class="s2">&quot;http://&quot;</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="n">sleep</span><span class="p">(</span><span class="n">wait_parameter</span><span class="o">.</span><span class="n">startup_delay_time_ms</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_container_still_running</span><span class="p">(</span><span class="n">docker_client</span><span class="p">,</span> <span class="n">container_id</span><span class="p">):</span>
@@ -8867,7 +8883,8 @@ testcompose.waiters.endpoint_waiters.EndpointWaiters        </code>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">EndpointWaiters</span><span class="o">.</span><span class="n">_get_container_host_ip</span><span class="p">()</span>
                 <span class="n">mapped_port</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">exposed_ports</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">wait_parameter</span><span class="o">.</span><span class="n">http_port</span><span class="p">)]</span>
-                <span class="n">site_url</span> <span class="o">=</span> <span class="n">site_url</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">mapped_port</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wait_parameter</span><span class="o">.</span><span class="n">end_point</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="k">if</span> <span class="n">wait_parameter</span><span class="o">.</span><span class="n">use_https</span> <span class="k">else</span> <span class="s2">&quot;http://&quot;</span>
+                <span class="n">site_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">scheme</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">mapped_port</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">wait_parameter</span><span class="o">.</span><span class="n">end_point</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="n">response</span><span class="p">:</span> <span class="n">Response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">site_url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">wait_parameter</span><span class="o">.</span><span class="n">response_status_code</span><span class="p">:</span>
                     <span class="k">break</span>
@@ -8969,7 +8986,7 @@ testcompose.waiters.log_waiters.LogWaiter        </code>
     <span class="k">def</span> <span class="nf">search_container_logs</span><span class="p">(</span>
         <span class="n">docker_client</span><span class="p">:</span> <span class="n">DockerClient</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">Container</span><span class="p">,</span> <span class="n">log_parameter</span><span class="p">:</span> <span class="n">ContainerLogWaitParameter</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Search for a given predicate in the container log. Useful to check if a</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for a given predicate in the container log. Useful to check if a</span>
 <span class="sd">        container is running and healthy</span>
 
 <span class="sd">        Args:</span>
@@ -9105,7 +9122,7 @@ container is running and healthy</p>
 <span class="k">def</span> <span class="nf">search_container_logs</span><span class="p">(</span>
     <span class="n">docker_client</span><span class="p">:</span> <span class="n">DockerClient</span><span class="p">,</span> <span class="n">container</span><span class="p">:</span> <span class="n">Container</span><span class="p">,</span> <span class="n">log_parameter</span><span class="p">:</span> <span class="n">ContainerLogWaitParameter</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Search for a given predicate in the container log. Useful to check if a</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search for a given predicate in the container log. Useful to check if a</span>
 <span class="sd">    container is running and healthy</span>
 
 <span class="sd">    Args:</span>
@@ -9484,27 +9501,6 @@ testcompose.run_containers.RunContainers            (<a class="autorefs autorefs
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../environment_variables/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Environment Variables" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              Environment Variables
-            </div>
-          </div>
-        </a>
-      
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -9526,12 +9522,11 @@ testcompose.run_containers.RunContainers            (<a class="autorefs autorefs
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
       
-    
     
   </body>
 </html>

@@ -12,8 +12,14 @@
       
         <link rel="canonical" href="https://rugging24.github.io/python-testcompose/environment_variables/">
       
+      
+        <link rel="prev" href="../quickstart/">
+      
+      
+        <link rel="next" href="../api/">
+      
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.2">
     
     
       
@@ -21,15 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.f56500e0.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
-        
-          
-          
-          <meta name="theme-color" content="#795649">
-        
       
       
 
@@ -358,39 +359,40 @@
                   
 
 
+
 <h1 id="environment-variables">Environment Variables</h1>
 <p>These are generally variables exposed on a running container as environment variables. The can be specified in the configuration as:</p>
-<div class="codehilite"><pre><span></span><code><span class="nn">...</span><span class="w"></span>
-<span class="nt">environment</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">SOMEKEY_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value_1</span><span class="w"></span>
-<span class="w">  </span><span class="nt">SOMEKEY_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value_2</span><span class="w"></span>
-<span class="w">  </span><span class="nt">SOMEKEY_3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value_3</span><span class="w"></span>
-<span class="nn">...</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="nn">...</span>
+<span class="nt">environment</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">SOMEKEY_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value_1</span>
+<span class="w">  </span><span class="nt">SOMEKEY_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value_2</span>
+<span class="w">  </span><span class="nt">SOMEKEY_3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">some_value_3</span>
+<span class="nn">...</span>
 </code></pre></div>
 
 <p>The above variables <code>SOMEKEY_1</code>, <code>SOMEKEY_2</code> and <code>SOMEKEY_3</code> will be available from within the container as environment variables.
 Place holder variables from another container can also be used in a container as environment variables as long as the container looking to expose such variables depends on the other contnainer. i.e</p>
-<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">auto_remove</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">SOMEKEY_APP1_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span><span class="w"></span>
-<span class="w">      </span><span class="nt">SOMEKEY_APP1_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span><span class="w"></span>
-<span class="w">      </span><span class="nt">SOMEKEY_APP1_3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localtest</span><span class="w"></span>
-<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app2</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">APP2_KEY_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://${app1.somekey_app1_1}-${app1.somekey_app1_2}/${app1.somekey_app1_3}:5592&quot;</span><span class="err">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">APP2_KEY_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a</span><span class="w"></span>
-<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4450</span><span class="w"></span>
-<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span>
+<span class="w">    </span><span class="nt">auto_remove</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">SOMEKEY_APP1_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="w">      </span><span class="nt">SOMEKEY_APP1_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
+<span class="w">      </span><span class="nt">SOMEKEY_APP1_3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localtest</span>
+<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app2</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">APP2_KEY_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://${app1.somekey_app1_1}-${app1.somekey_app1_2}/${app1.somekey_app1_3}:5592&quot;</span><span class="err">,</span>
+<span class="w">      </span><span class="nt">APP2_KEY_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a</span>
+<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4450</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span>
 </code></pre></div>
 
 <p>The above placeholder variable <code>http://${app1.somekey_app1_1}:${app1.somekey_app1_2}/${app1.somekey_app1_3}:5592</code> of <code>app2</code> will be translated at runtime as <code>http://localhost-postgres/localtest:5592</code>. A primary requirement of this is that <code>app2</code> depends on <code>app1</code>!.</p>
@@ -404,28 +406,28 @@ Place holder variables from another container can also be used in a container as
 - <strong><code>container_hostname</code></strong>: This is mainly the hostname of the docker image as seen within the created docker network. Usually, this is assigned the service name provided in the config.
 - <strong><code>self</code></strong>: This is a keyword use to mean the <code>current</code> image itself. E.g to specify the hostname of a service in its environment variable, one could write <code>http://${self.container_hostname}/ping</code> which will replace the plaeholder variable at startup.</p>
 <p>To use this set of variables, the <code>yaml</code> config above could be extended as shown:</p>
-<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">auto_remove</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">SOMEKEY_APP1_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span><span class="w"></span>
-<span class="w">      </span><span class="nt">SOMEKEY_APP1_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span><span class="w"></span>
-<span class="w">      </span><span class="nt">SOMEKEY_APP1_3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localtest</span><span class="w"></span>
-<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app2</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">auto_remove</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
-<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">APP2_KEY_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://${app1.container_hostname}/${app1.somekey_app1_3}:5592&quot;</span><span class="err">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">APP2_KEY_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a</span><span class="w"></span>
-<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4450</span><span class="w"></span>
-<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span>
+<span class="w">    </span><span class="nt">auto_remove</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">SOMEKEY_APP1_1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="w">      </span><span class="nt">SOMEKEY_APP1_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">postgres</span>
+<span class="w">      </span><span class="nt">SOMEKEY_APP1_3</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localtest</span>
+<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5432</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app2</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;node&quot;</span>
+<span class="w">    </span><span class="nt">auto_remove</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">APP2_KEY_1</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://${app1.container_hostname}/${app1.somekey_app1_3}:5592&quot;</span><span class="err">,</span>
+<span class="w">      </span><span class="nt">APP2_KEY_2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">a</span>
+<span class="w">    </span><span class="nt">exposed_ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4450</span>
+<span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">app1</span>
 </code></pre></div>
 
 <p>And this will be translated as <code>http://${app1.docker_python_internal_host}/${app1.somekey_app1_3}:5592</code> -&gt; <code>http://app1-runtimehostname/localtest:5592</code>. Where <code>app1-runtimehostname</code> is determined at runtime.</p>
@@ -456,42 +458,6 @@ Place holder variables from another container can also be used in a container as
       
         <footer class="md-footer">
   
-    
-    <nav class="md-footer__inner md-grid" aria-label="Footer" >
-      
-        
-        <a href="../quickstart/" class="md-footer__link md-footer__link--prev" aria-label="Previous: QuickStart" rel="prev">
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
-          </div>
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Previous
-              </span>
-              QuickStart
-            </div>
-          </div>
-        </a>
-      
-      
-        
-        <a href="../api/" class="md-footer__link md-footer__link--next" aria-label="Next: Developer Reference" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Developer Reference
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
-      
-    </nav>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-copyright">
@@ -513,12 +479,11 @@ Place holder variables from another container can also be used in a container as
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.12658920.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      <script src="../assets/javascripts/bundle.5cf534bf.min.js"></script>
       
-    
     
   </body>
 </html>
