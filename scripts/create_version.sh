@@ -29,4 +29,4 @@ function compute_version() {
 }
 
 
-compute_version
+compute_version | xargs -I {} poetry version {}
