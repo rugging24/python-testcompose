@@ -19,7 +19,6 @@ theme:
     code: Roboto Mono
 
 plugins:
-  - git-revision-date
   - autorefs
   - search
   - mkdocstrings:
