@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "testcompose"
-version = "0.1.2"
+version = "0.1.3"
 description = "Provide an easy way to perform integration testing with docker and python"
 authors = [
-    "Olakunle Olaniyi"
+    "Olakunle Olaniyi <rugging24@gmail.com>"
+]
+maintainers = [
+    "Olakunle Olaniyi <rugging24@gmail.com>"
 ]
 license = "MIT License"
 readme = "README.md"
@@ -77,8 +80,7 @@ skip-string-normalization = true
 
 [tool.pytest.ini_options]
 addopts = [
-    "--import-mode=prepend",
-    "--durations=50",
+    "--durations=500",
     "-vv",
     "--color=yes",
     "--log-level=DEBUG"
