@@ -21,7 +21,11 @@ function compute_version() {
     latest_version="${major_version}.${minor_version}.${update_version}"
 
     git config user.email "rugging24@gmail.com"
-    git config user.name "Github Action CI User"
+    git config user.name "Olakunle Olaniyi"
+    poetry version ${latest_version}
+    git add pyproject.toml
+    git commit -m "project version update ${latest_version}"
+    git push origin master
     git tag -a "${latest_version}" -m "creating ${latest_version} tag version"
     git push origin tag "${latest_version}"
 
@@ -29,4 +33,4 @@ function compute_version() {
 }
 
 
-compute_version | xargs -I {} poetry version {}
+compute_version
