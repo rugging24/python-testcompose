@@ -25,7 +25,7 @@ jobs:
         run: poetry install --no-root && poetry build
       - name: "Publish to PyPI/Github Pages"
         run: |
-          pip install twine && twine check dist/*
-          mkdocs build
+          poetry run twine check dist/*
+          poetry run mkdocs build
           poetry publish -u __token__ -p ${{ secrets.PYPI_TWINE_TOKEN }}
-          mkdocs gh-deploy --force
+          poetry run mkdocs gh-deploy --force
