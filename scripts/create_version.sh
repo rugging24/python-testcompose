@@ -25,7 +25,7 @@ function compute_version() {
     poetry version ${latest_version}
     git add pyproject.toml
     git commit -m "project version update ${latest_version}"
-    git push origin master
+    git push origin main
     git tag -a "${latest_version}" -m "creating ${latest_version} tag version"
     git push origin tag "${latest_version}"
 
