@@ -12,12 +12,22 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: git fetch --prune --unshallow
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.9
-      - name: "Build and Publish to PyPI/Github Pages"
+          python-version: 3.10
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.3.0.dev0"
+      - name: Set Package version
+        run: |
+          TESTCOMPOSE_VERSION=$(scripts/create_version.sh)
+          poetry version $TESTCOMPOSE_VERSION
+      - name: Build package
+        run: poetry install && poetry build
+      - name: "Publish to PyPI/Github Pages"
         run: "scripts/build-and-publish-packages.sh"
         env:
           TWINE_USERNAME: __token__

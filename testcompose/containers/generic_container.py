@@ -162,7 +162,7 @@ class GenericContainer(BaseContainer):
         mapped_ports: Dict[str, str] = dict()
         ports: Dict[str, Any] = self.container_attr.NetworkSettings.Ports
         for port in ports:
-            container_port = re.sub("[^0-9]", "", port)
+            container_port: str = re.sub("[^0-9]", "", port)
             if container_port in exposed_ports and ports[port] and isinstance(ports[port], list):
                 host_ports: ContainerMappedPorts = ContainerMappedPorts(**(ports[port][0]))
                 mapped_ports.update({container_port: host_ports.HostPort})

@@ -16,11 +16,6 @@ function compute_version() {
         else
             update_version=$(($update_version + 1))
         fi
-
-        if [ $((${minor_version} + 1)) -ge 11 ]; then
-            minor_version=0
-            major_version=$(($major_version + 1))
-        fi
     fi
 
     latest_version="${major_version}.${minor_version}.${update_version}"
@@ -34,4 +29,4 @@ function compute_version() {
 }
 
 
-compute_version | xargs -I {} echo "__VERSION__ = '{}'" > testcompose/__init__.py
+compute_version

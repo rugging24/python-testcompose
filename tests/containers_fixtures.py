@@ -19,7 +19,7 @@ def db_and_app_containers():
                     "POSTGRES_DB": "postgres",
                     "POSTGRES_PASSWORD": "password",
                 },
-                "exposed_ports": ["5432"],
+                "exposed_ports": [5432],
                 "log_wait_parameters": {
                     "log_line_regex": ".*database system is ready to accept connections.*",
                     "wait_timeout_ms": 30000,
@@ -47,7 +47,7 @@ def db_and_app_containers():
                         "source": "filesystem",
                     },
                 ],
-                "exposed_ports": ["8000"],
+                "exposed_ports": [8000],
                 "log_wait_parameters": {
                     "log_line_regex": ".*Application startup complete.*",
                     "wait_timeout_ms": 45000,

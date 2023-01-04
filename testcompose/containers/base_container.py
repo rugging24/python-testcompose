@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from copy import deepcopy
 import pathlib
+import re
 from typing import Any, Dict, List, Optional
 from testcompose.containers.container_utils import ContainerUtils
 from testcompose.models.bootstrap.container_service import ContainerService
@@ -151,12 +152,29 @@ class BaseContainer:
         exposed_ports: Dict[int, Any] = dict()
         if ports:
             for port in ports:
-                _ports: List[str] = str(port).split(":")
-                if len(_ports) == 2:
-                    exposed_ports[int(_ports[1])] = int(_ports[0])
-                else:
-                    exposed_ports[int(port)] = None
+                _ports: List[str] = self._generate_exposed_ports(re.sub(r"(\s)", "", port))
+                for _port in _ports:
+                    if len(_port.split(":")) == 2:
+                        exposed_ports[int(_ports[1])] = int(_ports[0])
+                    else:
+                        exposed_ports[int(_port)] = None
         return exposed_ports
+
+    def _generate_exposed_ports(self, port: str) -> List[str]:
+        matches: List[Any] = re.findall(r"\-", port)
+        unprocessed_ports: List[str] = list()
+        if len(matches) == 0:
+            unprocessed_ports.append(port)
+        elif len(matches) == 1:
+            start, end = str(port).split("-")
+            if int(end) <= int(start):
+                raise AttributeError(
+                    f"Start exposed port {start} must be less than end exposed port {end} for port ranges!"
+                )
+            unprocessed_ports = [str(x) for x in range(int(start), int(end) + 1)]
+        else:
+            raise AttributeError("Allowed exposed port format is host:container or port1 - port2")
+        return unprocessed_ports
 
     def _container_volumes(
         self, volumes: Optional[List[ContainerVolumeMap]] = None
