@@ -43,7 +43,6 @@ class EndpointWaiters:
             bool: Endpoint returned expected status code
         """
         response_check: bool = True
-        site_url: str = "https://" if wait_parameter.use_https else "http://"
         for _ in range(0, 3):
             sleep(wait_parameter.startup_delay_time_ms / 1000)
             if not is_container_still_running(docker_client, container_id):
@@ -52,7 +51,8 @@ class EndpointWaiters:
             try:
                 host: str = EndpointWaiters._get_container_host_ip()
                 mapped_port: str = exposed_ports[str(wait_parameter.http_port)]
-                site_url = site_url + f"{host}:{mapped_port}/{wait_parameter.end_point.lstrip('/')}"
+                scheme: str = "https://" if wait_parameter.use_https else "http://"
+                site_url: str = scheme + f"{host}:{mapped_port}/{wait_parameter.end_point.lstrip('/')}"
                 response: Response = get(url=site_url.rstrip("/"))
                 if response.status_code == wait_parameter.response_status_code:
                     break

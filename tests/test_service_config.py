@@ -1,9 +1,8 @@
 from functools import wraps
-from io import StringIO
 from docker import from_env
 import pytest
 from pydantic.error_wrappers import ValidationError
-from config_fixtures import valid_container_config, config_with_missing_service_key, config_with_missing_attr
+from .config_fixtures import valid_container_config, config_with_missing_service_key, config_with_missing_attr
 from testcompose.configs.parse_config import TestConfigParser
 from testcompose.configs.service_config import Config
 from testcompose.models.bootstrap.container_service import ContainerServices, RankedContainerServices
