@@ -433,16 +433,6 @@ Place holder variables from another container can also be used in a container as
 <p>And this will be translated as <code>http://${app1.docker_python_internal_host}/${app1.somekey_app1_3}:5592</code> -&gt; <code>http://app1-runtimehostname/localtest:5592</code>. Where <code>app1-runtimehostname</code> is determined at runtime.</p>
 <p>The variable combination of with the keywords might vary depending on what usage is intended. One could use a combination of <code>self</code> with all the other specifal variables e.g <code>${self.container_hostname}</code>, <code>${self.container_host_address}</code> and so on. As well as using it in a different form with <code>self</code> replaced by the name of a reference service. E.g for the config above, one could specify <code>${app1.container_hostname}</code> which will be replaced with <code>app1</code> since the service name is always used as the container hostname.</p>
 
-  <hr>
-<div class="md-source-file">
-  <small>
-    
-      Last update:
-      2022-04-26
-    
-  </small>
-</div>
-
 
 
 
