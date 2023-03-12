@@ -104,9 +104,11 @@ celerybeat.pid
 
 # SageMath parsed files
 *.sage.py
+*.swp
 
 # Environments
 .env
+.envrc
 .venv
 env/
 venv/
@@ -147,3 +149,6 @@ cython_debug/
 
 # docs
 site/
+
+# Vim natvie files
+tags
