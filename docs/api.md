@@ -6,6 +6,8 @@
 
 ::: testcompose.configs.service_config.Config
 
+::: testcompose.configs.generate_template_config.GenerateConfigTemplate
+
 ::: testcompose.containers.base_container.BaseContainer
 
 ::: testcompose.containers.container_network.ContainerNetwork

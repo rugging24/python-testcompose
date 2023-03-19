@@ -22,7 +22,23 @@ $ pip install testcompose
 
 testcompose requires Python 3.7+.
 
-You can either use a config file of the format:
+```shell
+# Testcompose include a cli utility to help create a quickstart config file that should be update to suit the needs of the user.
+# Create a config file by running the command
+
+testcompose generate-template --help   # shows the help and exit.
+
+# To generate template config for an app and a db combination, run the command
+
+testcompose generate-template --component db --component app
+
+# The above command ouputs to stdout. To output to a file, include a filepath as below
+
+testcompose generate-template --component db --component app --template-file some-valid-file-location.yaml
+
+```
+
+A sample of the config file is represented below:
 
 ```yaml
 services:
