@@ -154,8 +154,9 @@ class BaseContainer:
             for port in ports:
                 _ports: List[str] = self._generate_exposed_ports(re.sub(r"(\s)", "", port))
                 for _port in _ports:
-                    if len(_port.split(":")) == 2:
-                        exposed_ports[int(_ports[1])] = int(_ports[0])
+                    _split_port: List[str] = _port.split(":")
+                    if len(_split_port) == 2:
+                        exposed_ports[int(_split_port[1])] = int(_split_port[0])
                     else:
                         exposed_ports[int(_port)] = None
         return exposed_ports

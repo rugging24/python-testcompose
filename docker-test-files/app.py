@@ -1,10 +1,11 @@
 from typing import Any, Dict
-from fastapi import FastAPI
-import sqlalchemy
+from fastapi import FastAPI  # type: ignore
 import os
-import uvicorn
+import uvicorn  # type: ignore
+from kafka import KafkaProducer, KafkaConsumer  # type: ignore
+import json
+import psycopg2
 
-# from confluent_kafka import Producer, Consumer
 
 app = FastAPI(debug=True)
 
@@ -14,14 +15,14 @@ def check_service_health():
     return {"status": "pong"}
 
 
-# @app.post("/version/produce")
-# def store_data_in_kafka(data: Dict[str, Any]):
-#     return kafka_producer(data=data)
+@app.post("/version/produce")
+def store_data_in_kafka(data: Dict[str, Any]):
+    return kafka_producer(data=data)
 
 
-# @app.post("/version/consume")
-# def fetch_data_in_kafka(data: Dict[str, Any]):
-#     # return kafka_consumer(data=data)
+@app.post("/version/consume")
+def fetch_data_in_kafka(data: Dict[str, Any]):
+    return kafka_consumer(data=data)
 
 
 @app.get("/version")
@@ -33,14 +34,15 @@ def connect_to_db() -> Dict[str, Any]:
     response: Dict[str, Any] = dict()
     try:
         db_url = os.getenv("DB_URL")
-
-        e = sqlalchemy.create_engine(f"postgresql+psycopg2://{db_url}")
-        result = e.execute("select version()")
+        e = psycopg2.connect(db_url)
+        cursor = e.cursor()
+        cursor.execute("select version()")
+        result = cursor.fetchone()
         version = None
         if result:
             for row in result:
                 if not version:
-                    version = row[0]
+                    version = row
         if version:
             response.update({"version": version})
     except Exception as exc:
@@ -49,51 +51,35 @@ def connect_to_db() -> Dict[str, Any]:
     return response
 
 
-# def kafka_producer(data: Dict[str, Any]):
-#     print(data)
-#     try:
-#         producer = Producer(
-#             {
-#                 "bootstrap.servers": f"{os.getenv('KAFKA_BOOTSTRAP_SERVERS')}",
-#                 "debug": "all",
-#                 "socket.timeout.ms": 60,
-#             }
-#         )
-#         producer.poll(0)
-#         producer.produce(f"{os.getenv('KAFKA_TOPIC')}", json.dumps(data).encode("utf-8"))
-
-#         producer.flush()
-#         return {"status": "success"}
-#     except Exception:
-#         return {"status": "failed"}
+def kafka_producer(data: Dict[str, Any]):
+    try:
+        producer = KafkaProducer(bootstrap_servers=[f"{os.getenv('KAFKA_BOOTSTRAP_SERVERS')}"])
+        producer.send(f"{os.getenv('KAFKA_TOPIC')}", json.dumps(data).encode("utf-8"))
+        producer.flush()
+        producer.close()
+        return {"status": "success"}
+    except Exception:
+        return {"status": "failed"}
 
 
-# def kafka_consumer(data: Dict[str, Any]):
-#     version = dict()
-#     try:
-#         c = Consumer(
-#             {
-#                 "bootstrap.servers": f"{os.getenv('KAFKA_BOOTSTRAP_SERVERS')}",
-#                 "group.id": data.get("group_id") or uuid4().hex,
-#                 "auto.offset.reset": f"{os.getenv('KAFKA_OFFSET_RESET')}",
-#                 "debug": "broker, topic, protocol",
-#             }
-#         )
-#         c.subscribe([f"{os.getenv('KAFKA_TOPIC')}"])
-#         while True:
-#             msg = c.poll(1.0)
-#             if msg is None:
-#                 continue
-#             if msg.error():
-#                 print("Consumer error: {}".format(msg.error()))
-#                 break
-#             else:
-#                 version = json.loads(json.loads(msg.value().decode("utf-8")))
-#                 break
-#         c.close()
-#     except Exception:
-#         return version
-#     return version
+def kafka_consumer(data: Dict[str, Any]):
+    version = dict()
+    try:
+        consumer = KafkaConsumer(
+            f"{os.getenv('KAFKA_TOPIC')}",
+            bootstrap_servers=[f"{os.getenv('KAFKA_BOOTSTRAP_SERVERS')}"],
+            group_id=data.get("group_id"),
+            auto_offset_reset='earliest',
+        )
+        for msg in consumer:
+            if msg.value:
+                version = json.loads((msg.value).decode("utf-8"))
+            if version:
+                break
+        consumer.close()
+    except Exception:
+        return version
+    return version
 
 
 if __name__ == "__main__":

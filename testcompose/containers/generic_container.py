@@ -3,10 +3,10 @@ from logging import Logger
 import re
 import socket
 from time import sleep
-from docker.client import DockerClient
+from docker.client import DockerClient  # type: ignore
 from typing import Any, ByteString, Dict, List, Optional, Tuple, Union
-from docker.models.containers import Container
-from docker.errors import APIError
+from docker.models.containers import Container  # type: ignore
+from docker.errors import APIError  # type: ignore
 from testcompose.containers.base_container import BaseContainer
 from testcompose.containers.container_network import ContainerNetwork
 from testcompose.models.container.running_container_attributes import (
@@ -26,6 +26,14 @@ logger: Logger = stream_logger(__name__)
 class GenericContainer(BaseContainer):
     def __init__(self) -> None:
         super().__init__()
+
+    @property
+    def container_label(self) -> str:
+        return self._container_label
+
+    @container_label.setter
+    def container_label(self, label: str) -> None:
+        self._container_label = label
 
     @property
     def container_network(self) -> ContainerNetwork:
@@ -79,6 +87,7 @@ class GenericContainer(BaseContainer):
             remove=True,
             network=self.network,
             hostname=self.host_name,
+            labels=[self.container_label],
         )  # type: ignore
 
     def check_container_health(self, docker_client: DockerClient, timeout: int = 120) -> None:

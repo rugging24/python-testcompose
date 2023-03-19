@@ -31,7 +31,7 @@ def db_and_app_containers():
                 "image": "python:3.9",
                 "command": "/bin/bash -x /run_app.sh",
                 "environment": {
-                    "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.container_hostname}:5432/${database.postgres_db}"
+                    "DB_URL": "dbname=${database.postgres_db} password=${database.postgres_password} host=${database.container_hostname} port=5432 user=${database.postgres_user}",
                 },
                 "volumes": [
                     {
@@ -105,7 +105,7 @@ def broker_app_and_db_containers():
                     },
                 ],
                 "environment": {
-                    "DB_URL": "${database.postgres_user}:${database.postgres_password}@${database.container_hostname}:5432/${database.postgres_db}",
+                    "DB_URL": "dbname=${database.postgres_db} password=${database.postgres_password} host=${database.container_hostname} port=5432 user=${database.postgres_user}",
                     "KAFKA_BOOTSTRAP_SERVERS": "${kafka.container_hostname}:29092",
                     "KAFKA_OFFSET_RESET": "earliest",
                     "KAFKA_TOPIC": "test_kafka_topic",

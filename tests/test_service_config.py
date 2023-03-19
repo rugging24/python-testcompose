@@ -1,5 +1,4 @@
-from functools import wraps
-from docker import from_env
+from docker import from_env  # type: ignore
 import pytest
 from pydantic.error_wrappers import ValidationError
 from .config_fixtures import valid_container_config, config_with_missing_service_key, config_with_missing_attr

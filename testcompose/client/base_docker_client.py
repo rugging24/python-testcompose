@@ -1,10 +1,14 @@
-import docker
+import docker  # type: ignore
 from docker import DockerClient
 from abc import ABC
 from testcompose.models.client.client_login import ClientFromEnv, ClientFromUrl
 from testcompose.models.client.registry_parameters import Login
-from docker.errors import ImageNotFound
+from docker.errors import ImageNotFound  # type: ignore
 import traceback
+from testcompose.log_setup import stream_logger
+
+
+logger = stream_logger(__name__)
 
 
 class BaseDockerClient(ABC):
@@ -74,4 +78,4 @@ class BaseDockerClient(ABC):
         except ImageNotFound:
             self.docker_client.images.pull(repository=image_name)
         except Exception:
-            print(traceback.format_exc())
+            logger.error(traceback.format_exc())
