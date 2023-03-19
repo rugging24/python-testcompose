@@ -10,7 +10,7 @@ class TestConfigParser:
         """parses and verifies test yaml config file
 
         Args:
-            file_name (str): absolutel path of the config file
+            file_name (str): absolute path of the config file
 
         Raises:
             FileNotFoundError: when config file not present

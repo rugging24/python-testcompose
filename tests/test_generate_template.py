@@ -9,11 +9,11 @@ def test_generate_template():
         config,
         [
             'generate-template',
-            '--components',
+            '--component',
             'app',
-            '--components',
+            '--component',
             'db',
-            '--components',
+            '--component',
             'broker',
         ],
     )
