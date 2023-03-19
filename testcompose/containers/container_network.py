@@ -1,6 +1,6 @@
 from typing import Dict, Optional
-from docker.models.networks import Network
-from docker.client import DockerClient
+from docker.models.networks import Network  # type: ignore
+from docker.client import DockerClient  # type: ignore
 
 from testcompose.models.network.network import DefaultNeworkDrivers
 
@@ -15,9 +15,11 @@ class ContainerNetwork:
         network_name (str): Name of test network
     """
 
-    def __init__(self, docker_client: DockerClient, network_name: str) -> None:
+    def __init__(
+        self, docker_client: DockerClient, network_name: str, labels: Dict[str, str] = dict()
+    ) -> None:
         self._docker_client: DockerClient = docker_client
-        self._assign_group_network(network_name)
+        self._assign_group_network(network_name, labels=labels)
 
     @property
     def network(self) -> Network:
@@ -50,7 +52,7 @@ class ContainerNetwork:
     def _assign_group_network(
         self,
         network_name: str,
-        label: Dict[str, str] = dict(),
+        labels: Dict[str, str] = dict(),
         driver: str = DefaultNeworkDrivers.DEFAULT_BRIDGE_NETWORK,
     ) -> None:
         try:
@@ -61,7 +63,7 @@ class ContainerNetwork:
                 driver=driver,
                 check_duplicate=True,
                 internal=False,
-                labels=label or None,
+                labels=labels or None,
                 enable_ipv6=False,
                 attachable=True,
                 scope='local',

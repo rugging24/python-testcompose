@@ -34,7 +34,7 @@ class ContainerUtils:
         pattern: str = "\\$\\{([^}]*)}"
         substituted_env_variables: Dict[str, Any] = copy(service_env_variables)
         modified_exposed_ports: List[str] = deepcopy(exposed_ports)
-        cmpl = re.compile(pattern=pattern).findall
+        cmpl: Any = re.compile(pattern=pattern).findall
         for k, v in service_env_variables.items():
             if isinstance(v, str):
                 replaced_variable: str = v

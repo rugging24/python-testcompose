@@ -1,6 +1,6 @@
 import json
 from typing import Any, Dict
-from requests import Response, get
+from requests import Response, get, post
 from testcompose.configs.service_config import Config
 from testcompose.models.bootstrap.container_service import ContainerServices
 from testcompose.models.container.running_container import RunningContainer
@@ -11,6 +11,7 @@ from .containers_fixtures import (
     db_and_app_containers_config_services,
     broker_app_and_db_containers_config_services,
 )
+from kafka import KafkaProducer  # type: ignore
 
 
 def test_db_and_app_containers(db_and_app_containers, db_and_app_containers_config_services):
@@ -38,52 +39,46 @@ def test_db_and_app_containers(db_and_app_containers, db_and_app_containers_conf
         assert isinstance(json.loads(response.text), dict)
 
 
-# def test_broker_app_and_db_containers(
-#     broker_app_and_db_containers, broker_app_and_db_containers_config_services
-# ) -> None:
-#     config_services = broker_app_and_db_containers_config_services
-#     running_config = Config(test_services=config_services)
-#     assert running_config.ranked_config_services
-#     with RunContainers(
-#         config_services=config_services, ranked_services=running_config.ranked_config_services
-#     ) as runner:
-#         assert runner
-#         app_container_srv_name = "application"
-#         app_service: RunningContainer = runner.running_containers[app_container_srv_name]
-#         app_env_vars = app_service.config_environment_variables
-#         mapped_port = app_service.generic_container.get_exposed_port("8000")
-#         assert mapped_port
-#         app_host = app_service.generic_container.get_container_host_ip()
-#         response = get(url=f"http://{app_host}:{int(mapped_port)}/version")
-#         assert response
-#         assert response.status_code == 200
-#         version = response.text
-#         assert isinstance(json.loads(version), dict)
+def test_broker_app_and_db_containers(
+    broker_app_and_db_containers, broker_app_and_db_containers_config_services
+) -> None:
+    config_services = broker_app_and_db_containers_config_services
+    running_config = Config(test_services=config_services)
+    assert running_config.ranked_config_services
 
-#         # produce the version to kafka
-#         kafka_app = runner.running_containers["kafka"]
-#         kafka_mapped_port = kafka_app.generic_container.get_exposed_port("9092")
-#         kafka_host = kafka_app.generic_container.get_container_host_ip()
-#         produce_kafka_msg(kafka_mapped_port, kafka_host, app_env_vars, version)
+    with RunContainers(
+        config_services=config_services, ranked_services=running_config.ranked_config_services
+    ) as runner:
+        assert runner
+        app_container_srv_name: str = "application"
+        assert runner.running_containers
 
-#         # consume the message from kafka
-#         headers = {"Content-Type": "application/json"}
-#         consume = post(
-#             url=f"http://{app_host}:{int(mapped_port)}/version/consume",
-#             json=json.loads(json.dumps({"group_id": "testing_kafka"})),
-#             headers=headers,
-#         )
-#         assert consume.status_code == 200
-#         assert json.loads(consume.text) == json.loads(version)
+        app_service: RunningContainer = runner.running_containers[app_container_srv_name]
+        mapped_port = app_service.generic_container.get_exposed_port("8000")
+        assert mapped_port
+        app_host = app_service.generic_container.get_container_host_ip()
+        response = get(url=f"http://{app_host}:{int(mapped_port)}/version")
+        assert response
+        assert response.status_code == 200
+        version = response.text
+        assert isinstance(json.loads(version), dict)
 
+        headers: Dict[str, str] = {"Content-Type": "application/json"}
+        # produce the version to kafka
+        producer = post(
+            url=f"http://{app_host}:{int(mapped_port)}/version/produce",
+            json=json.loads(version),
+            headers=headers,
+        )
 
-# def produce_kafka_msg(kafka_mapped_port, kafka_host, app_env_vars, version):
-#     from kafka import KafkaProducer
-
-#     producer: KafkaProducer = KafkaProducer(bootstrap_servers=f"{kafka_host}:{kafka_mapped_port}")
-#     producer.send(
-#         f"{app_env_vars.get('KAFKA_TOPIC')}", json.dumps(json.dumps(json.loads(version))).encode("utf-8")
-#     )
-
-#     producer.flush()
-#     producer.close()
+        assert producer.status_code == 200
+        assert json.loads(producer.text) == {"status": "success"}
+        # consume the message from kafka
+        consumer = post(
+            url=f"http://{app_host}:{int(mapped_port)}/version/consume",
+            json={"group_id": "testing_kafka"},
+            headers=headers,
+            timeout=30.0,
+        )
+        assert consumer.status_code == 200
+        assert json.loads(consumer.text) == json.loads(version)
