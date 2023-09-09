@@ -1,18 +1,19 @@
+import traceback
+from abc import ABC
+
 import docker  # type: ignore
 from docker import DockerClient
-from abc import ABC
+from docker.errors import ImageNotFound  # type: ignore
+
+from testcompose.log_setup import stream_logger
 from testcompose.models.client.client_login import ClientFromEnv, ClientFromUrl
 from testcompose.models.client.registry_parameters import Login
-from docker.errors import ImageNotFound  # type: ignore
-import traceback
-from testcompose.log_setup import stream_logger
-
 
 logger = stream_logger(__name__)
 
 
 class BaseDockerClient(ABC):
-    def __init__(self, client_env_param: ClientFromEnv, client_url_param: ClientFromUrl) -> None:
+    def __init__(self, client_env_param: ClientFromEnv, client_url_param: ClientFromUrl) -> None:  # noqa: E501
         super(BaseDockerClient, self).__init__()
         _client_url_param: ClientFromUrl = ClientFromUrl()
         _client_env_param: ClientFromEnv = ClientFromEnv()
@@ -37,7 +38,7 @@ class BaseDockerClient(ABC):
 
     def _init_docker_client(
         self, *, client_url_param: ClientFromUrl, client_env_param: ClientFromEnv
-    ) -> DockerClient:
+    ) -> DockerClient:  # noqa: E501
         _docker_client: DockerClient = self._docker_client_from_env(client_env_param)
         if client_url_param.docker_host:
             _docker_client = self._docker_client_from_url(client_url_param)

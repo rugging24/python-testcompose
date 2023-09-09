@@ -1,7 +1,9 @@
-from typing import Any, Dict
-import yaml
 import os
-from testcompose.models.bootstrap.container_service import ContainerService, ContainerServices
+from typing import Any, Dict
+
+import yaml
+
+from testcompose.models.bootstrap.container_service import ContainerService, ContainerServices  # noqa: E501
 
 
 class TestConfigParser:
@@ -18,7 +20,7 @@ class TestConfigParser:
 
         Returns:
             ConfigServices: A ConfigServices object with all named services in the config
-        """
+        """  # noqa: E501
         if not os.path.exists(file_name):
             raise FileNotFoundError(f"Config file {file_name} does not exist!!")
 

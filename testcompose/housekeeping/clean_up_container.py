@@ -1,10 +1,11 @@
-from typing import Any, Dict, List
-from testcompose.models.bootstrap.container_service import ContainerService
-from uuid import uuid4
-from testcompose.containers.generic_container import GenericContainer
-from testcompose.containers.container_network import ContainerNetwork
 import socket
+from typing import Any, Dict, List
+from uuid import uuid4
+
+from testcompose.containers.container_network import ContainerNetwork
+from testcompose.containers.generic_container import GenericContainer
 from testcompose.log_setup import stream_logger
+from testcompose.models.bootstrap.container_service import ContainerService
 
 logger = stream_logger(__name__)
 
@@ -25,7 +26,7 @@ class Housekeeping:
                 "RYUK_CONNECTION_TIMEOUT": 120,
             },
             "volumes": [
-                {"host": "/var/run/docker.sock", "container": "/var/run/docker.sock", "mode": "ro"},
+                {"host": "/var/run/docker.sock", "container": "/var/run/docker.sock", "mode": "ro"},  # noqa: E501
             ],
             "log_wait_parameters": {
                 "log_line_regex": ".*Started!.*",
@@ -40,17 +41,17 @@ class Housekeeping:
         parameter = Housekeeping.cleanup_parameters()
         ryuk_container: ContainerService = ContainerService(**parameter)
         generic_container: GenericContainer = GenericContainer()
-        generic_container.container_network = ContainerNetwork(docker_client, network_name)
+        generic_container.container_network = ContainerNetwork(docker_client, network_name)  # noqa: E501
         generic_container.container_label = str(parameter.get("name"))
         generic_container.with_service(ryuk_container, dict(), network_name)
-        generic_container.container = generic_container.start(docker_client=docker_client)
+        generic_container.container = generic_container.start(docker_client=docker_client)  # noqa: E501
         generic_container.check_container_health(docker_client=docker_client)
         return generic_container
 
     @staticmethod
     def perform_housekeeping(docker_client, labels: List[str]):
         if labels:
-            container: GenericContainer = Housekeeping.start_ryuk_container(docker_client)
+            container: GenericContainer = Housekeeping.start_ryuk_container(docker_client)  # noqa: E501
             TCP_IP = container.get_container_host_ip()
             TCP_PORT = int(str(container.get_exposed_port(port="8080")))
             for label in labels:

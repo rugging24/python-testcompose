@@ -1,14 +1,17 @@
-from datetime import datetime
-from logging import Logger
 import re
 import socket
+from datetime import datetime
+from logging import Logger
 from time import sleep
-from docker.client import DockerClient  # type: ignore
 from typing import Any, ByteString, Dict, List, Optional, Tuple, Union
-from docker.models.containers import Container  # type: ignore
+
+from docker.client import DockerClient  # type: ignore
 from docker.errors import APIError  # type: ignore
+from docker.models.containers import Container  # type: ignore
+
 from testcompose.containers.base_container import BaseContainer
 from testcompose.containers.container_network import ContainerNetwork
+from testcompose.log_setup import stream_logger
 from testcompose.models.container.running_container_attributes import (
     PossibleContainerStates,
     RunningContainerAttributes,
@@ -16,9 +19,7 @@ from testcompose.models.container.running_container_attributes import (
 from testcompose.models.network.network import ContainerMappedPorts
 from testcompose.waiters.endpoint_waiters import EndpointWaiters
 from testcompose.waiters.log_waiters import LogWaiter
-from testcompose.log_setup import stream_logger
 from testcompose.waiters.waiting_utils import is_container_still_running
-
 
 logger: Logger = stream_logger(__name__)
 
@@ -68,12 +69,14 @@ class GenericContainer(BaseContainer):
         Args:
             atrr (RunningContainerAttributes): container attributes
         """
-        self._container_attr: RunningContainerAttributes = RunningContainerAttributes(**atrr)
+        self._container_attr: RunningContainerAttributes = RunningContainerAttributes(**atrr)  # noqa: E501
 
-    def start(self, docker_client: DockerClient) -> Container:
+    def start(self, docker_client: DockerClient) -> Container:  # type: ignore
         """Start a container"""
         if not docker_client.ping():
-            raise RuntimeError("Docker Client not Running. Please check your docker settings and try again")
+            raise RuntimeError(
+                "Docker Client not Running. Please check your docker settings and try again"  # noqa: E501
+            )  # noqa: E501
 
         return docker_client.containers.run(
             image=self.image,
@@ -90,16 +93,16 @@ class GenericContainer(BaseContainer):
             labels=[self.container_label],
         )  # type: ignore
 
-    def check_container_health(self, docker_client: DockerClient, timeout: int = 120) -> None:
+    def check_container_health(self, docker_client: DockerClient, timeout: int = 120) -> None:  # noqa: E501
         start_time: datetime = datetime.now()
         while (datetime.now() - start_time).total_seconds() < timeout:
             logger.info(
                 f"Waiting for containe:{self.container.name} status to \
-                change from {self.container.status} to {PossibleContainerStates.RUNNING}"
+                change from {self.container.status} to {PossibleContainerStates.RUNNING}"  # noqa: E501
             )
             self.container.reload()
             if self.container.status == PossibleContainerStates.RUNNING:
-                logger.info(f"Container:{self.container.name} status changed to {self.container.status}")
+                logger.info(f"Container:{self.container.name} status changed to {self.container.status}")  # noqa: E501
                 break
             sleep(2)
 
@@ -107,7 +110,7 @@ class GenericContainer(BaseContainer):
         if self.container.status != PossibleContainerStates.RUNNING:
             for line in self.container.logs(stream=True):
                 logger.debug(line.decode())
-            raise RuntimeError(f"Container is in an unwanted state {self.container.status}")
+            raise RuntimeError(f"Container is in an unwanted state {self.container.status}")  # noqa: E501
 
         self.reload(docker_client, self.get_container_id())
 
@@ -117,7 +120,7 @@ class GenericContainer(BaseContainer):
 
         if self.http_waiter:
             mapped_http_port: Dict[str, str] = dict()
-            mapped_http_port[str(self.http_waiter.http_port)] = self.get_exposed_port(  # type: ignore
+            mapped_http_port[str(self.http_waiter.http_port)] = self.get_exposed_port(  # type: ignore  # noqa: E501
                 str(self.http_waiter.http_port)
             )
             EndpointWaiters.wait_for_http(
@@ -172,8 +175,8 @@ class GenericContainer(BaseContainer):
         ports: Dict[str, Any] = self.container_attr.NetworkSettings.Ports
         for port in ports:
             container_port: str = re.sub("[^0-9]", "", port)
-            if container_port in exposed_ports and ports[port] and isinstance(ports[port], list):
-                host_ports: ContainerMappedPorts = ContainerMappedPorts(**(ports[port][0]))
+            if container_port in exposed_ports and ports[port] and isinstance(ports[port], list):  # noqa: E501
+                host_ports: ContainerMappedPorts = ContainerMappedPorts(**(ports[port][0]))  # noqa: E501
                 mapped_ports.update({container_port: host_ports.HostPort})
         return mapped_ports
 
@@ -184,7 +187,7 @@ class GenericContainer(BaseContainer):
             Optional[str]: Container Id
         """
         if self.container:
-            return self.container.id
+            return self.container.id  # type: ignore
         return None
 
     def get_container_host_ip(self) -> str:
@@ -209,4 +212,4 @@ class GenericContainer(BaseContainer):
         """
         if not self.container:
             raise RuntimeError("Container must already be running to exec a command")
-        return self.container.exec_run(cmd=command)
+        return self.container.exec_run(cmd=command)  # type: ignore

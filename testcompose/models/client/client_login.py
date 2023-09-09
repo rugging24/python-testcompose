@@ -1,6 +1,7 @@
 from typing import Any, Dict, Optional
+
+from docker.constants import DEFAULT_MAX_POOL_SIZE, DEFAULT_TIMEOUT_SECONDS  # type: ignore  # noqa: E501
 from pydantic import BaseModel, validator
-from docker.constants import DEFAULT_TIMEOUT_SECONDS, DEFAULT_MAX_POOL_SIZE
 
 
 class ClientFromEnv(BaseModel):
