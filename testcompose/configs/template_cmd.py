@@ -1,10 +1,12 @@
-from typing import Any, Dict, List, Optional
-from click import command, option, echo
+import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import click
 import yaml
+from click import command, echo, option
+
 from testcompose.configs.generate_template_config import GenerateConfigTemplate
-import sys
 
 
 @command(name='generate-template')
@@ -29,14 +31,14 @@ def generate_template(template_file: str, component: List[str]):
     if template_file:
         _filename = Path(template_file).absolute()
         if _filename.exists() or not _filename.parent.exists():
-            click.echo(f"Config file {template_file} must not already exists or directory must exist")
+            click.echo(f"Config file {template_file} must not already exists or directory must exist")  # noqa: E501
             click.echo()
             sys.exit(0)
 
     _template_module = f"{'_'.join(_components)}_template"
     if not hasattr(GenerateConfigTemplate(), _template_module):
         _missing_attr_error_reporting()
-    generated_template: Dict[str, Any] = getattr(GenerateConfigTemplate(), _template_module)()
+    generated_template: Dict[str, Any] = getattr(GenerateConfigTemplate(), _template_module)()  # noqa: E501
 
     if _filename:
         with open(template_file, 'w') as fh:

@@ -1,5 +1,5 @@
-from docker.errors import APIError
-from docker.client import DockerClient
+from docker.client import DockerClient  # type: ignore
+from docker.errors import APIError  # type: ignore
 
 
 def is_container_still_running(docker_client: DockerClient, container_id: str) -> bool:

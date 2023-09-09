@@ -2,8 +2,9 @@ import re
 import socket
 from copy import copy, deepcopy
 from typing import Any, Dict, List, Optional, Tuple
-from testcompose.models.container.supported_placeholders import SupportedPlaceholders
+
 from testcompose.models.container.running_container import RunningContainer
+from testcompose.models.container.supported_placeholders import SupportedPlaceholders
 
 
 class ContainerUtils:
@@ -30,7 +31,7 @@ class ContainerUtils:
 
         Returns:
             Tuple[Dict[str, Any], List[str]]: A tuple of `env_config` and `exposed_ports`
-        """
+        """  # noqa: E501
         pattern: str = "\\$\\{([^}]*)}"
         substituted_env_variables: Dict[str, Any] = copy(service_env_variables)
         modified_exposed_ports: List[str] = deepcopy(exposed_ports)
@@ -52,7 +53,7 @@ class ContainerUtils:
                     )
                     if _exposed_ports:
                         modified_exposed_ports = deepcopy(_exposed_ports)
-                    replaced_variable = replaced_variable.replace(f"${{{occurence}}}", str(value))
+                    replaced_variable = replaced_variable.replace(f"${{{occurence}}}", str(value))  # noqa: E501
                 substituted_env_variables[k] = replaced_variable
         return substituted_env_variables, modified_exposed_ports
 
@@ -67,6 +68,7 @@ class ContainerUtils:
         _socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         _socket.settimeout(2)
         _socket.bind(("", 0))
+        port: str
         _, port = _socket.getsockname()
         _socket.close()
         return port
@@ -81,7 +83,7 @@ class ContainerUtils:
     ) -> Tuple[Optional[str], List[str]]:
         value: Optional[str] = None
         _exposed_ports: List[str] = list()
-        if container_name.lower() == SupportedPlaceholders.SELF_HOST or variable_name.lower() in [
+        if container_name.lower() == SupportedPlaceholders.SELF_HOST or variable_name.lower() in [  # noqa: E501
             SupportedPlaceholders.CONTAINER_HOSTNAME,
             SupportedPlaceholders.EXTERNAL_PORT,
             SupportedPlaceholders.CONTAINER_HOST_ADDRESS,
@@ -97,28 +99,30 @@ class ContainerUtils:
             ):
                 value = container_name
             else:
-                if variable_name.lower().startswith(SupportedPlaceholders.EXTERNAL_PORT):
+                if variable_name.lower().startswith(SupportedPlaceholders.EXTERNAL_PORT):  # noqa: E501
                     value, _exposed_ports = ContainerUtils._external_port_variables(
                         variable_name, exposed_ports
-                    )
-                elif variable_name.lower() == SupportedPlaceholders.CONTAINER_HOST_ADDRESS:
+                    )  # noqa: E501
+                elif variable_name.lower() == SupportedPlaceholders.CONTAINER_HOST_ADDRESS:  # noqa: E501
                     value = socket.gethostbyname(socket.gethostname())
         else:
             value = running_containers[
                 f"{container_name.lower()}"
-            ].generic_container.container_environment_variables[f"{variable_name.upper()}"]
+            ].generic_container.container_environment_variables[  # noqa: E501
+                f"{variable_name.upper()}"
+            ]
 
         return value, _exposed_ports
 
     @staticmethod
-    def _external_port_variables(variable_name: str, exposed_ports: List[str]) -> Tuple[str, List[str]]:
+    def _external_port_variables(variable_name: str, exposed_ports: List[str]) -> Tuple[str, List[str]]:  # noqa: E501
         _exposed_ports: List[str] = deepcopy(exposed_ports)
-        container_port: str = re.sub(SupportedPlaceholders.EXTERNAL_PORT + "_", "", variable_name)
+        container_port: str = re.sub(SupportedPlaceholders.EXTERNAL_PORT + "_", "", variable_name)  # noqa: E501
         host_port: str = ContainerUtils._get_free_host_port()
         if container_port and container_port not in exposed_ports:
             raise AttributeError(
-                f"self.hostport_{container_port} must be a valid supplied exposed_ports value!"
-            )
+                f"self.hostport_{container_port} must be a valid supplied exposed_ports value!"  # noqa: E501
+            )  # noqa: E501
         _exposed_ports.remove(container_port)
         _exposed_ports.append(f"{host_port}:{container_port}")
         value: str = str(host_port)

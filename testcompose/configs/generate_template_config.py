@@ -1,6 +1,7 @@
-from testcompose.configs.config_templates import simple_app_or_db, simple_broker
 from copy import deepcopy
 from typing import Any, Dict, List
+
+from testcompose.configs.config_templates import simple_app_or_db, simple_broker
 
 
 class GenerateConfigTemplate:
@@ -14,12 +15,12 @@ class GenerateConfigTemplate:
         _app = self._remove_keys(["http_wait_parameters"], simple_app_or_db())
         _app["name"] = "app"
         _app["environment"] = {
-            "DB_URL": "${db.db_user}:${db.db_password}@${db.container_hostname}:5432/${db.db_name}"
+            "DB_URL": "${db.db_user}:${db.db_password}@${db.container_hostname}:5432/${db.db_name}"  # noqa: E501
         }
         _app["depends_on"] = ["db"]
-        _db = self._remove_keys(["http_wait_parameters", "depends_on"], simple_app_or_db())
+        _db = self._remove_keys(["http_wait_parameters", "depends_on"], simple_app_or_db())  # noqa: E501
         _db["name"] = "db"
-        _db["environment"] = {"DB_USER": "user", "DB_PASSWORD": "very-secret", "DB_NAME": "some_db_name"}
+        _db["environment"] = {"DB_USER": "user", "DB_PASSWORD": "very-secret", "DB_NAME": "some_db_name"}  # noqa: E501
         return {"services": [_app, _db]}
 
     def app_template(self) -> Dict[str, Any]:
@@ -28,7 +29,7 @@ class GenerateConfigTemplate:
         return {"services": [_template]}
 
     def db_template(self) -> Dict[str, Any]:
-        _template = self._remove_keys(["http_wait_parameters", "depends_on"], simple_app_or_db())
+        _template = self._remove_keys(["http_wait_parameters", "depends_on"], simple_app_or_db())  # noqa: E501
         _template['name'] = 'db'
         return {"services": [_template]}
 

@@ -1,14 +1,14 @@
-from abc import abstractmethod
-from copy import deepcopy
 import pathlib
 import re
+from abc import abstractmethod
+from copy import deepcopy
 from typing import Any, Dict, List, Optional
+
 from testcompose.containers.container_utils import ContainerUtils
+from testcompose.models.bootstrap.container_http_wait_parameter import ContainerHttpWaitParameter  # noqa: E501
+from testcompose.models.bootstrap.container_log_wait_parameter import ContainerLogWaitParameter  # noqa: E501
 from testcompose.models.bootstrap.container_service import ContainerService
-from testcompose.models.bootstrap.container_http_wait_parameter import ContainerHttpWaitParameter
-from testcompose.models.bootstrap.container_log_wait_parameter import ContainerLogWaitParameter
-from testcompose.models.bootstrap.container_volume import ContainerVolumeMap
-from testcompose.models.bootstrap.container_volume import VolumeSourceTypes
+from testcompose.models.bootstrap.container_volume import ContainerVolumeMap, VolumeSourceTypes  # noqa: E501
 from testcompose.models.container.running_container import RunningContainer
 
 
@@ -79,8 +79,8 @@ class BaseContainer:
         return self._ports
 
     @ports.setter
-    def ports(self, ports: List[str]) -> None:
-        self._ports: Dict[int, Any] = self._exposed_ports(ports)
+    def ports(self, ports: Dict[int, Any]) -> None:
+        self._ports: Dict[int, Any] = deepcopy(ports)
 
     @property
     def container_environment_variables(self) -> Dict[str, Any]:
@@ -95,8 +95,8 @@ class BaseContainer:
         return self._volumes
 
     @volumes.setter
-    def volumes(self, volumes: List[ContainerVolumeMap]) -> None:
-        self._volumes: Dict[str, Dict[str, str]] = self._container_volumes(volumes)
+    def volumes(self, volumes: Dict[str, Dict[str, str]]) -> None:
+        self._volumes: Dict[str, Dict[str, str]] = deepcopy(volumes)
 
     def with_service(
         self,
@@ -121,6 +121,8 @@ class BaseContainer:
         """
         self.image = service.image
         self.command = service.command
+        substituted_env_variables: Dict[str, Any]
+        modified_exposed_ports: List[str]
         (
             substituted_env_variables,
             modified_exposed_ports,
@@ -131,9 +133,9 @@ class BaseContainer:
             exposed_ports=service.exposed_ports,
         )
         self.container_environment_variables = substituted_env_variables
-        self.ports = modified_exposed_ports
+        self.ports = self._exposed_ports(modified_exposed_ports)
         self.http_waiter = service.http_wait_parameters  # type: ignore
-        self.volumes = service.volumes
+        self.volumes = self._container_volumes(service.volumes)
         self.entry_point = service.entrypoint  # type: ignore
         self.log_waiter = service.log_wait_parameters  # type: ignore
         self.host_name = service.name
@@ -152,7 +154,7 @@ class BaseContainer:
         exposed_ports: Dict[int, Any] = dict()
         if ports:
             for port in ports:
-                _ports: List[str] = self._generate_exposed_ports(re.sub(r"(\s)", "", port))
+                _ports: List[str] = self._generate_exposed_ports(re.sub(r"(\s)", "", port))  # noqa: E501
                 for _port in _ports:
                     _split_port: List[str] = _port.split(":")
                     if len(_split_port) == 2:
@@ -170,16 +172,16 @@ class BaseContainer:
             start, end = str(port).split("-")
             if int(end) <= int(start):
                 raise AttributeError(
-                    f"Start exposed port {start} must be less than end exposed port {end} for port ranges!"
+                    f"Start exposed port {start} must be less than end exposed port {end} for port ranges!"  # noqa: E501
                 )
             unprocessed_ports = [str(x) for x in range(int(start), int(end) + 1)]
         else:
-            raise AttributeError("Allowed exposed port format is host:container or port1 - port2")
+            raise AttributeError("Allowed exposed port format is host:container or port1 - port2")  # noqa: E501
         return unprocessed_ports
 
     def _container_volumes(
         self, volumes: Optional[List[ContainerVolumeMap]] = None
-    ) -> Dict[str, Dict[str, str]]:
+    ) -> Dict[str, Dict[str, str]]:  # noqa: E501
         """A list of volume mappings to be mounted in the container.
 
             VolumeMapping:
@@ -192,7 +194,7 @@ class BaseContainer:
 
         Args:
             volumes (Optional[List[VolumeMapping]]): Optional list of volumes to mount on the container
-        """
+        """  # noqa: E501
         mapped_volumes: Dict[str, Dict[str, str]] = dict()
         if volumes:
             for vol in volumes:

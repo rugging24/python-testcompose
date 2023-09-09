@@ -1,12 +1,13 @@
 from copy import deepcopy
 from logging import Logger
 from typing import Dict, List
-from testcompose.models.bootstrap.container_service import (
-    RankedContainerServices,
-    ContainerServices,
-    ContainerService,
-)
+
 from testcompose.log_setup import stream_logger
+from testcompose.models.bootstrap.container_service import (  # noqa: E501
+    ContainerService,
+    ContainerServices,
+    RankedContainerServices,
+)
 
 logger: Logger = stream_logger(__name__)
 
@@ -20,7 +21,7 @@ class Config:
 
     Args:
         test_services (ConfigServices): model resulting from a parsed configuration file.
-    """
+    """  # noqa: E501
 
     def __init__(self, test_services: ContainerServices) -> None:
         self._rank_test_services(test_services)
@@ -46,7 +47,7 @@ class Config:
         Raises:
             ValueError: raised if test_services is `null`
             AttributeError: raised if no concreate networking is provided
-        """
+        """  # noqa: E501
         if not test_services:
             logger.error("Config content can not be Null")
             raise ValueError
@@ -63,7 +64,9 @@ class Config:
         _processed_containers_reversed: Dict[int, str] = {
             rank: service for service, rank in _processed_containers.items()
         }
-        self.ranked_config_services = RankedContainerServices(ranked_services=_processed_containers_reversed)
+        self.ranked_config_services = RankedContainerServices(
+            ranked_services=_processed_containers_reversed
+        )  # noqa: E501
 
     def _compute_container_ranks(
         self,
@@ -84,7 +87,7 @@ class Config:
 
         Returns:
             Dict[str, int]: A list of ranked service models.
-        """
+        """  # noqa: E501
         _ranked_services: Dict[str, int] = deepcopy(ranked_services)
         if not config_services:
             raise AttributeError("A valid config for test services must be provided")
@@ -94,7 +97,7 @@ class Config:
             return ranked_services
         else:
             services: Dict[str, ContainerService] = {
-                x: y for x, y in config_services.services.items() if x not in _ranked_services
+                x: y for x, y in config_services.services.items() if x not in _ranked_services  # noqa: E501
             }
             for service_name, service in services.items():
                 if not service.depends_on:
@@ -103,23 +106,23 @@ class Config:
                 else:
                     if set(service.depends_on).issubset(
                         _ranked_services.keys()
-                    ) and not self._check_cyclic_dependency(
-                        [config_services.services[x] for x in _ranked_services], service_name
+                    ) and not self._check_cyclic_dependency(  # noqa: E501
+                        [config_services.services[x] for x in _ranked_services], service_name  # noqa: E501
                     ):
                         _ranked_services.update({service_name: rank})
                         rank += 1
-                    elif not set(service.depends_on).issubset(list(config_services.services.keys())):
+                    elif not set(service.depends_on).issubset(list(config_services.services.keys())):  # noqa: E501
                         raise AttributeError(
-                            f"Invalid service name or dependencies detected: {service_name} <=> {set(service.depends_on)}"
+                            f"Invalid service name or dependencies detected: {service_name} <=> {set(service.depends_on)}"  # noqa: E501
                         )
             return self._compute_container_ranks(
                 ranked_services=_ranked_services, config_services=config_services
-            )
+            )  # noqa: E501
 
     @staticmethod
     def _check_cyclic_dependency(
         processed_services: List[ContainerService], dependent_service_name: str
-    ) -> bool:
+    ) -> bool:  # noqa: E501
         for service in processed_services:
             if set([dependent_service_name]).issubset(service.depends_on):
                 return True

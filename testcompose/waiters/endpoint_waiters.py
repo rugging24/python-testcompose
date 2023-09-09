@@ -1,13 +1,14 @@
 import socket
+from logging import Logger
 from time import sleep
 from typing import Dict
-from requests import Response, get
-from testcompose.models.bootstrap.container_http_wait_parameter import ContainerHttpWaitParameter
-from docker.client import DockerClient
-from logging import Logger
-from testcompose.log_setup import stream_logger
-from testcompose.waiters.waiting_utils import is_container_still_running
 
+from docker.client import DockerClient  # type: ignore
+from requests import Response, get
+
+from testcompose.log_setup import stream_logger
+from testcompose.models.bootstrap.container_http_wait_parameter import ContainerHttpWaitParameter  # noqa: E501
+from testcompose.waiters.waiting_utils import is_container_still_running
 
 logger: Logger = stream_logger(__name__)
 
@@ -41,7 +42,7 @@ class EndpointWaiters:
 
         Returns:
             bool: Endpoint returned expected status code
-        """
+        """  # noqa: E501
         response_check: bool = True
         for _ in range(0, 3):
             sleep(wait_parameter.startup_delay_time_ms / 1000)
@@ -52,7 +53,7 @@ class EndpointWaiters:
                 host: str = EndpointWaiters._get_container_host_ip()
                 mapped_port: str = exposed_ports[str(wait_parameter.http_port)]
                 scheme: str = "https://" if wait_parameter.use_https else "http://"
-                site_url: str = scheme + f"{host}:{mapped_port}/{wait_parameter.end_point.lstrip('/')}"
+                site_url: str = scheme + f"{host}:{mapped_port}/{wait_parameter.end_point.lstrip('/')}"  # noqa: E501
                 response: Response = get(url=site_url.rstrip("/"))
                 if response.status_code == wait_parameter.response_status_code:
                     break
@@ -71,4 +72,4 @@ class EndpointWaiters:
         exposed_ports: Dict[str, str],
     ) -> None:
         if wait_parameter:
-            EndpointWaiters._check_endpoint(docker_client, container_id, wait_parameter, exposed_ports)
+            EndpointWaiters._check_endpoint(docker_client, container_id, wait_parameter, exposed_ports)  # noqa: E501

@@ -1,22 +1,22 @@
 from logging import Logger
-from uuid import uuid4
 from typing import Dict, List
+from uuid import uuid4
 
-from testcompose.client.base_docker_client import BaseDockerClient
-from testcompose.containers.generic_container import GenericContainer
-from testcompose.containers.container_network import ContainerNetwork
-from testcompose.housekeeping.clean_up_container import Housekeeping
-from testcompose.log_setup import stream_logger
-from testcompose.models.client.client_login import ClientFromEnv, ClientFromUrl
-from testcompose.models.client.registry_parameters import Login
-from testcompose.models.bootstrap.container_service import (
-    ContainerServices,
-    RankedContainerServices,
-    ContainerService,
-)
-from testcompose.models.container.running_container import RunningContainer, RunningContainers
 from docker.errors import APIError  # type: ignore
 
+from testcompose.client.base_docker_client import BaseDockerClient
+from testcompose.containers.container_network import ContainerNetwork
+from testcompose.containers.generic_container import GenericContainer
+from testcompose.housekeeping.clean_up_container import Housekeeping
+from testcompose.log_setup import stream_logger
+from testcompose.models.bootstrap.container_service import (  # noqa: E501
+    ContainerService,
+    ContainerServices,
+    RankedContainerServices,
+)
+from testcompose.models.client.client_login import ClientFromEnv, ClientFromUrl
+from testcompose.models.client.registry_parameters import Login
+from testcompose.models.container.running_container import RunningContainer, RunningContainers  # noqa: E501
 
 logger: Logger = stream_logger(__name__)
 
@@ -35,7 +35,7 @@ class RunContainers(BaseDockerClient):
         env_param: ClientFromEnv = ClientFromEnv(),
         url_param: ClientFromUrl = ClientFromUrl(),
     ) -> None:
-        super(RunContainers, self).__init__(client_env_param=env_param, client_url_param=url_param)
+        super(RunContainers, self).__init__(client_env_param=env_param, client_url_param=url_param)  # noqa: E501
         self._config_services: ContainerServices = config_services
         self._ranked_config_services: RankedContainerServices = ranked_services
         self.running_containers = RunningContainers()
@@ -93,14 +93,14 @@ class RunContainers(BaseDockerClient):
                 processed_containers_services,
                 generic_container.container_network.name,  # type: ignore
             )
-            generic_container.container_label = f"{self.unique_container_label}_{service.name}"
+            generic_container.container_label = f"{self.unique_container_label}_{service.name}"  # noqa: E501
             self._running_container_labels.append(generic_container.container_label)
             try:
                 log_wait_timeout = 120
                 if service.log_wait_parameters:
-                    log_wait_timeout = int((service.log_wait_parameters.wait_timeout_ms or 120000) / 1000)
-                generic_container.container = generic_container.start(self.docker_client)
-                generic_container.check_container_health(self.docker_client, timeout=log_wait_timeout)
+                    log_wait_timeout = int((service.log_wait_parameters.wait_timeout_ms or 120000) / 1000)  # noqa: E501
+                generic_container.container = generic_container.start(self.docker_client)  # noqa: E501
+                generic_container.check_container_health(self.docker_client, timeout=log_wait_timeout)  # noqa: E501
                 running_container: RunningContainer = RunningContainer(
                     service_name=service.name,
                     config_environment_variables=generic_container.container_environment_variables,
@@ -111,12 +111,14 @@ class RunContainers(BaseDockerClient):
                 logger.error(exc)
                 self.stop_running_containers()
                 raise APIError(exc)
-        logger.info("The following containers were started: %s", list(processed_containers_services.keys()))
-        self.running_containers = RunningContainers(running_containers=processed_containers_services)
+        logger.info(
+            "The following containers were started: %s", list(processed_containers_services.keys())  # noqa: E501
+        )  # noqa: E501
+        self.running_containers = RunningContainers(running_containers=processed_containers_services)  # noqa: E501
         return self.running_containers
 
     def stop_running_containers(self) -> None:
         self._running_container_labels.sort(reverse=True)
         Housekeeping.perform_housekeeping(
             docker_client=self.docker_client, labels=self._running_container_labels
-        )
+        )  # noqa: E501
