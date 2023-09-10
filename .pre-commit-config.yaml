@@ -1,29 +1,41 @@
 ---
-default_stages: [commit, push]
+default_stages: [ commit, push ]
 minimum_pre_commit_version: "1.20.0"
 default_language_version:
   python: python3.11
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.2.0
-  hooks:
-    - id: trailing-whitespace
-    - id: end-of-file-fixer
-    - id: check-yaml
-    - id: check-added-large-files
-- repo: https://github.com/psf/black
-  rev: 22.10.0
-  hooks:
-    - id: black
-      args: [--config=./pyproject.toml]
-- repo: https://github.com/pycqa/flake8
-  rev: 4.0.1
-  hooks:
-    - id: flake8
-      args: [--max-line-length=131, --exclude=docker/test_app/*, --exclude=tests/*]
-- repo: https://github.com/python-poetry/poetry
-  rev: 1.4.0
-  hooks:
-    - id: poetry-check
-    - id: poetry-export
-      args: ["-f", "requirements.txt", "-o", "requirements.txt", "--without-hashes"]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+        args: [ --config=./pyproject.toml ]
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        args:
+          [
+            --max-line-length=131,
+            --exclude=docker/test_app/*,
+            --exclude=tests/*
+          ]
+  - repo: https://github.com/python-poetry/poetry
+    rev: 1.6.1
+    hooks:
+      - id: poetry-check
+      - id: poetry-export
+        args:
+          [
+            "-f",
+            "requirements.txt",
+            "-o",
+            "requirements.txt",
+            "--without-hashes"
+          ]

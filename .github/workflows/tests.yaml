@@ -1,11 +1,11 @@
 name: Tests
-on: [push]
+on: [ push ]
 jobs:
   security:
     name: Snyk Security Scanner
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/python@master
         env:
@@ -21,12 +21,12 @@ jobs:
         platform:
           - ubuntu-latest
         python-version:
-          - '3.7'
-          - '3.8'
-          - '3.9'
-          - '3.10'
-          - '3.11'
-        poetry-version: ["1.4.0"]
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+        poetry-version: [ "1.6.1" ]
     steps:
       - name: Code Checkout
         uses: actions/checkout@v3
