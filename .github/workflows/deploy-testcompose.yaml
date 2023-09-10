@@ -29,7 +29,7 @@ jobs:
           poetry install --no-root
           bash -x scripts/create_version.sh
           poetry build
-      - name: "Publish to PyPI/Github Pages"
+      - name: "Publish to PyPI & Github Pages"
         uses: pypa/gh-action-pypi-publish@release/v1
         run: |
           poetry run twine check dist/*
