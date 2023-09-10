@@ -29,10 +29,10 @@ jobs:
           poetry install --no-root
           bash -x scripts/create_version.sh
           poetry build
-      - uses: pypa/gh-action-pypi-publish@release/v1
-      - name: "Publish to PyPI & Github Pages"
-        run: |
           poetry run twine check dist/*
+      - name: "Publish to PyPI"
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: "Publish Github Pages"
+        run: |
           poetry run mkdocs build
-          poetry publish
           poetry run mkdocs gh-deploy --force
